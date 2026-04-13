@@ -2,7 +2,7 @@ import type { Variants } from "framer-motion";
 
 export const pageTransition = {
   initial: { opacity: 0, y: 12 },
-  animate: { opacity: 1, y: 0, transition: { duration: 0.45, ease: [0.25, 0.46, 0.45, 0.94] } },
+  animate: { opacity: 1, y: 0, transition: { duration: 0.45, ease: "easeOut" } },
   exit: { opacity: 0, y: -8, transition: { duration: 0.25, ease: "easeIn" } },
 };
 
@@ -11,7 +11,7 @@ export const fadeUp: Variants = {
   visible: (i: number = 0) => ({
     opacity: 1,
     y: 0,
-    transition: { delay: i * 0.1, duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] },
+    transition: { delay: i * 0.1, duration: 0.5, ease: "easeOut" },
   }),
 };
 
