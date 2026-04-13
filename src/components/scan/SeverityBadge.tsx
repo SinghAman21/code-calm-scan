@@ -1,17 +1,23 @@
 import { Severity } from "@/types";
 import { cn } from "@/lib/utils";
 
-const severityConfig: Record<Severity, { label: string; className: string }> = {
-  critical: { label: "Critical", className: "bg-severity-critical/15 text-severity-critical border-severity-critical/30" },
-  high: { label: "High", className: "bg-severity-high/15 text-severity-high border-severity-high/30" },
-  medium: { label: "Medium", className: "bg-severity-medium/15 text-severity-medium border-severity-medium/30" },
-  low: { label: "Low", className: "bg-severity-low/15 text-severity-low border-severity-low/30" },
+const severityConfig: Record<Severity, { label: string; dotClass: string; textClass: string }> = {
+  critical: { label: "Critical", dotClass: "bg-severity-critical", textClass: "text-severity-critical" },
+  high: { label: "High", dotClass: "bg-severity-high", textClass: "text-severity-high" },
+  medium: { label: "Medium", dotClass: "bg-severity-medium", textClass: "text-severity-medium" },
+  low: { label: "Low", dotClass: "bg-severity-low", textClass: "text-severity-low" },
 };
 
 export function SeverityBadge({ severity, className }: { severity: Severity; className?: string }) {
   const config = severityConfig[severity];
   return (
-    <span className={cn("inline-flex items-center rounded-md border px-2 py-0.5 text-xs font-medium", config.className, className)}>
+    <span className={cn(
+      "inline-flex items-center gap-1 rounded px-1.5 py-0.5 text-2xs font-medium",
+      "bg-muted/80",
+      config.textClass,
+      className
+    )}>
+      <span className={cn("h-1.5 w-1.5 rounded-full", config.dotClass)} />
       {config.label}
     </span>
   );
