@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { cn } from "@/lib/utils";
 import { pageTransition, fadeUp, staggerContainer, staggerItem, duration } from "@/animations/motion-presets";
 import { Link } from "react-router-dom";
 import {
@@ -188,9 +189,6 @@ function CodeLine({ n, children, dim, severity, add }: {
   );
 }
 
-function cn(...classes: (string | false | undefined)[]) {
-  return classes.filter(Boolean).join(" ");
-}
 
 function TrustStrip() {
   const items = [
