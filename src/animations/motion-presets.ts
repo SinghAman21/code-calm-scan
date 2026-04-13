@@ -1,21 +1,23 @@
-import type { Variants } from "framer-motion";
+import type { Easing } from "framer-motion";
+
+const ease: Easing = [0.25, 0.46, 0.45, 0.94];
 
 export const pageTransition = {
   initial: { opacity: 0, y: 12 },
-  animate: { opacity: 1, y: 0, transition: { duration: 0.45, ease: "easeOut" } },
-  exit: { opacity: 0, y: -8, transition: { duration: 0.25, ease: "easeIn" } },
-};
+  animate: { opacity: 1, y: 0, transition: { duration: 0.45, ease } },
+  exit: { opacity: 0, y: -8, transition: { duration: 0.25, ease } },
+} as const;
 
-export const fadeUp: Variants = {
+export const fadeUp = {
   hidden: { opacity: 0, y: 20 },
   visible: (i: number = 0) => ({
     opacity: 1,
     y: 0,
-    transition: { delay: i * 0.1, duration: 0.5, ease: "easeOut" },
+    transition: { delay: i * 0.1, duration: 0.5, ease },
   }),
 };
 
-export const staggerContainer: Variants = {
+export const staggerContainer = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
@@ -23,17 +25,17 @@ export const staggerContainer: Variants = {
   },
 };
 
-export const staggerItem: Variants = {
+export const staggerItem = {
   hidden: { opacity: 0, y: 12 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.35, ease: "easeOut" } },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.35, ease } },
 };
 
-export const slideInLeft: Variants = {
+export const slideInLeft = {
   hidden: { x: -20, opacity: 0 },
-  visible: { x: 0, opacity: 1, transition: { duration: 0.3, ease: "easeOut" } },
+  visible: { x: 0, opacity: 1, transition: { duration: 0.3, ease } },
 };
 
-export const scaleIn: Variants = {
+export const scaleIn = {
   hidden: { scale: 0.95, opacity: 0 },
-  visible: { scale: 1, opacity: 1, transition: { duration: 0.3, ease: "easeOut" } },
+  visible: { scale: 1, opacity: 1, transition: { duration: 0.3, ease } },
 };
