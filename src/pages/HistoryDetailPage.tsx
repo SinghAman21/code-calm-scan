@@ -5,7 +5,7 @@ import { useParams, Link } from "react-router-dom";
 import { MOCK_SCAN_RESULT } from "@/data/mock-data";
 import { SeverityBadge } from "@/components/scan/SeverityBadge";
 import { useEffect, useRef } from "react";
-import { animateCountUp, gsapDuration } from "@/hooks/useGsapTimeline";
+import { animateCountUp } from "@/hooks/useGsapTimeline";
 import { prefersReducedMotion } from "@/animations/motion-presets";
 import { ArrowLeft, Copy } from "lucide-react";
 
