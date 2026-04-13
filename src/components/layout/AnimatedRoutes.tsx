@@ -21,7 +21,7 @@ export function AnimatedRoutes() {
         <Route path="/history" element={<HistoryPage />} />
         <Route path="/history/:id" element={<HistoryDetailPage />} />
         <Route path="/rules" element={<RulesPage />} />
-        <Route path="/playground" element={<PlaygroundPage />} />
+        {/* <Route path="/playground" element={<PlaygroundPage />} /> */}
         <Route path="/settings" element={<SettingsPage />} />
         <Route path="/onboarding" element={<OnboardingPage />} />
         <Route path="*" element={<NotFound />} />

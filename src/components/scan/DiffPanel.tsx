@@ -10,8 +10,8 @@ type TabId = "summary" | "diff" | "improved" | "explanation";
 
 const TABS: { id: TabId; label: string; icon: typeof Info }[] = [
   { id: "summary", label: "Summary", icon: Info },
-  { id: "diff", label: "Diff", icon: GitCompareArrows },
-  { id: "improved", label: "Fixed", icon: Code2 },
+  // { id: "diff", label: "Diff", icon: GitCompareArrows },
+  // { id: "improved", label: "Fixed", icon: Code2 },
   { id: "explanation", label: "Details", icon: BookOpen },
 ];
 
