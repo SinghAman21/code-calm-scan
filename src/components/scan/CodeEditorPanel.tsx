@@ -7,7 +7,7 @@ import { FileCode2, Loader2 } from "lucide-react";
 
 export function CodeEditorPanel() {
   const { code, setCode, language, isScanning } = useScan();
-  const { theme } = useTheme();
+  const { theme, editorFontSize } = useTheme();
   const lineCount = code.split("\n").length;
 
   return (
@@ -40,7 +40,7 @@ export function CodeEditorPanel() {
             </div>
           }
           options={{
-            fontSize: 13,
+            fontSize: editorFontSize,
             lineHeight: 20,
             fontFamily: "'JetBrains Mono', monospace",
             fontLigatures: true,

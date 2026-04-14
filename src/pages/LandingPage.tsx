@@ -33,7 +33,7 @@ function Nav() {
         </Link>
         <div className="flex items-center gap-5">
           <Link to="/rules" className="text-[13px] text-muted-foreground hover:text-foreground transition-colors duration-150">Rules</Link>
-          <Link to="/playground" className="text-[13px] text-muted-foreground hover:text-foreground transition-colors duration-150">Playground</Link>
+          {/* <Link to="/playground" className="text-[13px] text-muted-foreground hover:text-foreground transition-colors duration-150">Playground</Link> */}
           <Link
             to="/app"
             className="text-[13px] px-3.5 py-1.5 rounded-md bg-primary text-primary-foreground font-medium hover:brightness-110 transition-all duration-150"
@@ -98,12 +98,12 @@ function Hero() {
             Open scanner
             <ArrowRight className="h-4 w-4" />
           </Link>
-          <Link
+          {/* <Link
             to="/playground"
             className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg border border-border text-[14px] text-foreground hover:bg-accent transition-colors duration-150"
           >
             Try a demo
-          </Link>
+          </Link> */}
         </motion.div>
 
         {/* Code mockup */}

@@ -4,8 +4,9 @@ import { ScanButton } from "@/components/scan/ScanButton";
 import { ThemeToggle } from "@/components/common/ThemeToggle";
 import { useScan } from "@/hooks/useScanStore";
 import { SUPPORTED_LANGUAGES } from "@/data/mock-data";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import {
-  Shield, ScanSearch, Clock, ScrollText, FlaskConical, Cog, PanelLeftClose, PanelLeft, Wifi,
+  Shield, ScanSearch, Clock, ScrollText, FlaskConical, Cog, PanelLeftClose, PanelLeft, Wifi, Eraser,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { useState } from "react";
@@ -21,8 +22,9 @@ const NAV_ITEMS = [
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   const location = useLocation();
-  const { language, setLanguage } = useScan();
+  const { language, setLanguage, clearAll } = useScan();
   const [collapsed, setCollapsed] = useState(false);
+  const isAppRoute = location.pathname === "/app";
 
   return (
     <div className="flex h-screen bg-background overflow-hidden">
@@ -108,26 +110,38 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           initial={{ y: -8, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: duration.normal, delay: 0.06 }}
-          className="h-12 border-b border-border flex items-center px-4 gap-2 shrink-0"
+          className="min-h-12 border-b border-border flex items-center px-4 py-2 gap-2 shrink-0 flex-wrap"
           style={{ backgroundColor: "hsl(var(--surface-1))" }}
         >
           <div className="flex items-center gap-2 mr-4">
-            <span className="text-2xs uppercase tracking-wider text-muted-foreground font-medium">Lang</span>
-            <select
-              value={language}
-              onChange={(e) => setLanguage(e.target.value as any)}
-              className="text-xs bg-transparent border border-border rounded-md px-2 py-1 text-foreground focus:outline-none focus:ring-1 focus:ring-ring"
-            >
-              {SUPPORTED_LANGUAGES.map((l) => (
-                <option key={l.id} value={l.id}>{l.label}</option>
-              ))}
-            </select>
+            <span className="text-xs uppercase tracking-wider text-muted-foreground font-semibold">Language</span>
+            <Select value={language} onValueChange={(value) => setLanguage(value as any)}>
+              <SelectTrigger className="h-9 w-[180px] bg-background/70 border-border text-sm">
+                <SelectValue placeholder="Select language" />
+              </SelectTrigger>
+              <SelectContent>
+                {SUPPORTED_LANGUAGES.map((l) => (
+                  <SelectItem key={l.id} value={l.id}>{l.label}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
 
           <div className="flex-1" />
 
+          {isAppRoute && (
+            <button
+              onClick={clearAll}
+              className="inline-flex items-center gap-1.5 h-9 px-3.5 rounded-md border border-border text-sm text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
+            >
+              <Eraser className="h-3.5 w-3.5" />
+              Clear All
+            </button>
+          )}
+
+          {isAppRoute && <ScanButton className="h-9 px-3.5 text-sm" />}
+
           <ThemeToggle />
-          {(location.pathname === "/app" || location.pathname === "/playground") && <ScanButton />}
         </motion.header>
 
         <main className="flex-1 min-h-0">{children}</main>

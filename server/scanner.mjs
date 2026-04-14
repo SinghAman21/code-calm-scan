@@ -1,5 +1,6 @@
 import { randomUUID } from "node:crypto";
 import { SCAN_SYSTEM_PROMPT, buildScanUserPrompt } from "./prompt.mjs";
+import { createTrace } from "./logger.mjs";
 
 const SUPPORTED_LANGUAGES = new Set([
   "javascript",
@@ -16,14 +17,6 @@ const SUPPORTED_LANGUAGES = new Set([
 
 const VALID_SEVERITIES = new Set(["critical", "high", "medium", "low"]);
 const VALID_CATEGORIES = new Set(["vulnerability", "bug", "code-smell"]);
-
-function logScan(message, meta) {
-  if (meta) {
-    console.log(`[SCAN] ${message}`, meta);
-    return;
-  }
-  console.log(`[SCAN] ${message}`);
-}
 
 function getLineNumber(source, index) {
   if (index <= 0) return 1;
@@ -102,14 +95,14 @@ function buildStats(findings, code, durationSeconds, llmStats) {
   };
 }
 
-async function requestOpenAIScan({ code, language }) {
+async function requestOpenAIScan({ code, language, trace }) {
   const apiKey = process.env.LOCAL_API_KEY || "ollama";
 
   const model = process.env.LOCAL_MODEL || "qwen2.5-coder:3b-instruct";
   const baseUrl = process.env.LOCAL_BASE_URL || "http://localhost:11434/v1";
   const endpoint = `${baseUrl.replace(/\/$/, "")}/chat/completions`;
 
-  logScan("Dispatching model request", {
+  trace.step("Dispatching model request", {
     provider: baseUrl.includes("11434") ? "ollama" : "openai-compatible",
     endpoint,
     model,
@@ -143,24 +136,24 @@ async function requestOpenAIScan({ code, language }) {
 
   const payload = await response.json();
 
-  logScan("Model response received", {
+  trace.step("Model response received", {
     status: response.status,
     ok: response.ok,
   });
 
   if (!response.ok) {
     const message = payload?.error?.message || `OpenAI request failed with status ${response.status}`;
-    logScan("Model request failed", { message });
+    trace.error("Model request failed", { message });
     throw new Error(message);
   }
 
   const text = payload?.choices?.[0]?.message?.content;
   if (!text || typeof text !== "string") {
-    logScan("Model response missing message content");
+    trace.error("Model response missing message content");
     throw new Error("OpenAI did not return a JSON response payload.");
   }
 
-  logScan("Parsing model JSON payload");
+  trace.step("Parsing model JSON payload");
   return JSON.parse(sanitizeJsonText(text));
 }
 
@@ -179,18 +172,21 @@ export function validateScanInput(payload) {
   return { ok: true, code, language };
 }
 
-export async function scanCode({ code, language }) {
+export async function scanCode({ code, language, trace: externalTrace }) {
+  const trace = externalTrace || createTrace("SCAN");
   const startedAt = performance.now();
-  logScan("Scan started", { language, chars: code.length, lines: code.split("\n").length });
-  const llmResult = await requestOpenAIScan({ code, language });
+  trace.step("Scan pipeline started", { language, chars: code.length, lines: code.split("\n").length });
+  const llmResult = await requestOpenAIScan({ code, language, trace });
+  trace.step("Normalizing findings from model response");
   const findings = Array.isArray(llmResult?.findings)
     ? llmResult.findings.map((f, i) => normalizeFinding(f, i, code))
     : [];
   const durationSeconds = Number(((performance.now() - startedAt) / 1000).toFixed(3));
 
+  trace.step("Building deterministic stats");
   const stats = buildStats(findings, code, durationSeconds, llmResult?.stats);
 
-  logScan("Scan normalization completed", {
+  trace.step("Scan normalization completed", {
     findings: findings.length,
     critical: stats.critical,
     high: stats.high,

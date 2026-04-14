@@ -1,17 +1,76 @@
 import { motion } from "framer-motion";
-import { pageTransition, fadeUp, duration } from "@/animations/motion-presets";
+import { pageTransition, fadeUp } from "@/animations/motion-presets";
 import { AppShell } from "@/components/layout/AppShell";
 import { useParams, Link } from "react-router-dom";
-import { MOCK_SCAN_RESULT } from "@/data/mock-data";
 import { SeverityBadge } from "@/components/scan/SeverityBadge";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { animateCountUp } from "@/hooks/useGsapTimeline";
 import { prefersReducedMotion } from "@/animations/motion-presets";
-import { ArrowLeft, Copy } from "lucide-react";
+import { ArrowLeft, Copy, AlertCircle } from "lucide-react";
+import { fetchScanById } from "@/lib/scan-api";
+import { ScanResult } from "@/types";
 
 export default function HistoryDetailPage() {
   const { id } = useParams();
-  const result = MOCK_SCAN_RESULT;
+  const [result, setResult] = useState<ScanResult | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!id) {
+      setError("Missing scan id.");
+      setIsLoading(false);
+      return;
+    }
+
+    let cancelled = false;
+    const loadDetail = async () => {
+      try {
+        setIsLoading(true);
+        setError(null);
+        const scan = await fetchScanById(id);
+        if (!cancelled) setResult(scan);
+      } catch (err) {
+        if (!cancelled) setError(err instanceof Error ? err.message : "Failed to load scan detail.");
+      } finally {
+        if (!cancelled) setIsLoading(false);
+      }
+    };
+
+    loadDetail();
+    return () => {
+      cancelled = true;
+    };
+  }, [id]);
+
+  if (isLoading) {
+    return (
+      <AppShell>
+        <div className="h-full overflow-y-auto p-6">
+          <div className="max-w-4xl mx-auto space-y-4">
+            <div className="h-5 w-36 rounded bg-muted/60 animate-pulse" />
+            <div className="h-7 w-48 rounded bg-muted/60 animate-pulse" />
+            <div className="h-24 rounded-lg bg-muted/60 animate-pulse" />
+            <div className="h-24 rounded-lg bg-muted/60 animate-pulse" />
+          </div>
+        </div>
+      </AppShell>
+    );
+  }
+
+  if (error || !result) {
+    return (
+      <AppShell>
+        <div className="h-full flex items-center justify-center p-6">
+          <div className="max-w-md text-center text-muted-foreground">
+            <AlertCircle className="h-8 w-8 mx-auto mb-2 text-destructive" />
+            <p className="text-sm mb-3">{error || "Scan not found."}</p>
+            <Link to="/history" className="text-sm text-primary hover:underline">Back to history</Link>
+          </div>
+        </div>
+      </AppShell>
+    );
+  }
 
   return (
     <AppShell>
@@ -22,8 +81,8 @@ export default function HistoryDetailPage() {
             <ArrowLeft className="h-3 w-3" /> Back to history
           </Link>
 
-          <h1 className="text-xl font-bold text-foreground tracking-tight mb-1">Scan #{id}</h1>
-          <p className="text-[13px] text-muted-foreground mb-6">
+          <h1 className="text-2xl font-bold text-foreground tracking-tight mb-1">Scan #{id}</h1>
+          <p className="text-sm text-muted-foreground mb-6 capitalize">
             {result.language} · {result.stats.linesScanned} lines · {result.stats.scanDuration}s
           </p>
 
@@ -31,7 +90,7 @@ export default function HistoryDetailPage() {
 
           {/* Findings */}
           <div className="mt-8 space-y-2">
-            <h2 className="text-[15px] font-semibold text-foreground mb-3">Findings</h2>
+            <h2 className="text-lg font-semibold text-foreground mb-3">Findings</h2>
             {result.findings.map((f, i) => (
               <motion.div
                 key={f.id}
@@ -43,10 +102,10 @@ export default function HistoryDetailPage() {
               >
                 <div className="flex items-center gap-2 mb-1.5">
                   <SeverityBadge severity={f.severity} />
-                  <span className="text-[13px] font-medium text-foreground">{f.title}</span>
-                  <span className="text-2xs text-muted-foreground ml-auto font-mono">L{f.line}</span>
+                  <span className="text-sm font-medium text-foreground">{f.title}</span>
+                  <span className="text-xs text-muted-foreground ml-auto font-mono">L{f.line}</span>
                 </div>
-                <p className="text-2xs text-muted-foreground leading-relaxed">{f.description}</p>
+                <p className="text-xs text-muted-foreground leading-relaxed">{f.description}</p>
               </motion.div>
             ))}
           </div>
@@ -54,7 +113,7 @@ export default function HistoryDetailPage() {
           {/* Diff */}
           <div className="mt-8">
             <div className="flex items-center justify-between mb-3">
-              <h2 className="text-[15px] font-semibold text-foreground">Diff</h2>
+              <h2 className="text-lg font-semibold text-foreground">Diff</h2>
               <button
                 onClick={() => navigator.clipboard.writeText(result.improvedCode)}
                 className="flex items-center gap-1 text-2xs text-muted-foreground hover:text-foreground transition-colors"
@@ -84,7 +143,7 @@ export default function HistoryDetailPage() {
   );
 }
 
-function MetricRow({ stats }: { stats: typeof MOCK_SCAN_RESULT.stats }) {
+function MetricRow({ stats }: { stats: ScanResult["stats"] }) {
   const refs = {
     critical: useRef<HTMLSpanElement>(null),
     high: useRef<HTMLSpanElement>(null),

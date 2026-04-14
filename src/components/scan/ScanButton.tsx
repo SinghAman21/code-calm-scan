@@ -10,7 +10,7 @@ export function ScanButton({ className }: { className?: string }) {
       onClick={runScan}
       disabled={isScanning || !code.trim()}
       className={cn(
-        "inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-md text-[13px] font-medium transition-all duration-150",
+        "inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-md text-sm font-medium transition-all duration-150",
         "bg-primary text-primary-foreground",
         "hover:brightness-110 active:scale-[0.97]",
         "disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:brightness-100",

@@ -14,6 +14,7 @@ interface ScanState {
   selectedFinding: Finding | null;
   setSelectedFinding: (f: Finding | null) => void;
   runScan: () => Promise<void>;
+  clearAll: () => void;
   activeFilter: string;
   setActiveFilter: (f: string) => void;
 }
@@ -78,12 +79,19 @@ export function ScanProvider({ children }: { children: ReactNode }) {
     }
   }, [code, language]);
 
+  const clearAll = useCallback(() => {
+    setCode("");
+    setResult(null);
+    setSelectedFinding(null);
+    setActiveFilter("all");
+  }, []);
+
   return (
     <ScanContext.Provider
       value={{
         code, setCode, language, setLanguage,
         isScanning, result, selectedFinding, setSelectedFinding,
-        runScan, activeFilter, setActiveFilter,
+        runScan, clearAll, activeFilter, setActiveFilter,
       }}
     >
       {children}

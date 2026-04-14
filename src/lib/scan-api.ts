@@ -50,3 +50,39 @@ export async function fetchLatestScan(): Promise<ScanResult | null> {
 
   return payload.result ?? null;
 }
+
+export async function fetchScanHistory(): Promise<ScanResult[]> {
+  const response = await fetch("/api/scan/history", {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  const payload = await parseApiResponse(response);
+
+  if (!response.ok || !payload?.ok || !Array.isArray(payload.result)) {
+    const message = payload?.error || `Scan history fetch failed with status ${response.status}`;
+    throw new Error(message);
+  }
+
+  return payload.result as ScanResult[];
+}
+
+export async function fetchScanById(id: string): Promise<ScanResult> {
+  const response = await fetch(`/api/scan/${id}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  const payload = await parseApiResponse(response);
+
+  if (!response.ok || !payload?.ok || !payload.result) {
+    const message = payload?.error || `Scan detail fetch failed with status ${response.status}`;
+    throw new Error(message);
+  }
+
+  return payload.result;
+}

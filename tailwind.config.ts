@@ -16,7 +16,7 @@ export default {
         mono: ["JetBrains Mono", "ui-monospace", "monospace"],
       },
       fontSize: {
-        "2xs": ["0.625rem", { lineHeight: "0.875rem" }],
+        "2xs": ["0.75rem", { lineHeight: "1rem" }],
       },
       colors: {
         border: "hsl(var(--border))",
