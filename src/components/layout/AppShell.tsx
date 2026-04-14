@@ -15,7 +15,7 @@ const NAV_ITEMS = [
   { to: "/app", icon: ScanSearch, label: "New Scan" },
   { to: "/history", icon: Clock, label: "History" },
   { to: "/rules", icon: ScrollText, label: "Rules" },
-  { to: "/playground", icon: FlaskConical, label: "Playground" },
+  // { to: "/playground", icon: FlaskConical, label: "Playground" },
   { to: "/settings", icon: Cog, label: "Settings" },
 ];
 

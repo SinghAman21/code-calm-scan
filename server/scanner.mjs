@@ -1,5 +1,5 @@
 import { randomUUID } from "node:crypto";
-import { SCAN_SYSTEM_PROMPT, buildScanUserPrompt } from "./gemini-prompt.mjs";
+import { SCAN_SYSTEM_PROMPT, buildScanUserPrompt } from "./prompt.mjs";
 
 const SUPPORTED_LANGUAGES = new Set([
   "javascript",
@@ -16,6 +16,14 @@ const SUPPORTED_LANGUAGES = new Set([
 
 const VALID_SEVERITIES = new Set(["critical", "high", "medium", "low"]);
 const VALID_CATEGORIES = new Set(["vulnerability", "bug", "code-smell"]);
+
+function logScan(message, meta) {
+  if (meta) {
+    console.log(`[SCAN] ${message}`, meta);
+    return;
+  }
+  console.log(`[SCAN] ${message}`);
+}
 
 function getLineNumber(source, index) {
   if (index <= 0) return 1;
@@ -95,13 +103,20 @@ function buildStats(findings, code, durationSeconds, llmStats) {
 }
 
 async function requestOpenAIScan({ code, language }) {
-  const apiKey = process.env.OPENAI_API_KEY;
-  if (!apiKey) {
-    throw new Error("OPENAI_API_KEY is missing. Add it to .env before scanning.");
-  }
+  const apiKey = process.env.LOCAL_API_KEY || "ollama";
 
-  const model = process.env.OPENAI_MODEL || "gpt-4o-mini";
-  const endpoint = "https://api.openai.com/v1/chat/completions";
+  const model = process.env.LOCAL_MODEL || "qwen2.5-coder:3b-instruct";
+  const baseUrl = process.env.LOCAL_BASE_URL || "http://localhost:11434/v1";
+  const endpoint = `${baseUrl.replace(/\/$/, "")}/chat/completions`;
+
+  logScan("Dispatching model request", {
+    provider: baseUrl.includes("11434") ? "ollama" : "openai-compatible",
+    endpoint,
+    model,
+    language,
+    codeChars: code.length,
+    codeLines: code.split("\n").length,
+  });
 
   const response = await fetch(endpoint, {
     method: "POST",
@@ -128,16 +143,24 @@ async function requestOpenAIScan({ code, language }) {
 
   const payload = await response.json();
 
+  logScan("Model response received", {
+    status: response.status,
+    ok: response.ok,
+  });
+
   if (!response.ok) {
     const message = payload?.error?.message || `OpenAI request failed with status ${response.status}`;
+    logScan("Model request failed", { message });
     throw new Error(message);
   }
 
   const text = payload?.choices?.[0]?.message?.content;
   if (!text || typeof text !== "string") {
+    logScan("Model response missing message content");
     throw new Error("OpenAI did not return a JSON response payload.");
   }
 
+  logScan("Parsing model JSON payload");
   return JSON.parse(sanitizeJsonText(text));
 }
 
@@ -158,6 +181,7 @@ export function validateScanInput(payload) {
 
 export async function scanCode({ code, language }) {
   const startedAt = performance.now();
+  logScan("Scan started", { language, chars: code.length, lines: code.split("\n").length });
   const llmResult = await requestOpenAIScan({ code, language });
   const findings = Array.isArray(llmResult?.findings)
     ? llmResult.findings.map((f, i) => normalizeFinding(f, i, code))
@@ -165,6 +189,15 @@ export async function scanCode({ code, language }) {
   const durationSeconds = Number(((performance.now() - startedAt) / 1000).toFixed(3));
 
   const stats = buildStats(findings, code, durationSeconds, llmResult?.stats);
+
+  logScan("Scan normalization completed", {
+    findings: findings.length,
+    critical: stats.critical,
+    high: stats.high,
+    medium: stats.medium,
+    low: stats.low,
+    durationSeconds: stats.scanDuration,
+  });
 
   return {
     id: `scan-${randomUUID()}`,
