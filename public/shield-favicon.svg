@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="CodeAudit Shield">
+  <defs>
+    <linearGradient id="shieldGrad" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#2b66f6" />
+      <stop offset="1" stop-color="#0ea5e9" />
+    </linearGradient>
+  </defs>
+  <path d="M32 4 8 12v18c0 16 9.6 24.9 24 30 14.4-5.1 24-14 24-30V12L32 4z" fill="url(#shieldGrad)" />
+  <path d="M32 12 16 17v13.2c0 11.2 6.1 17.5 16 21.4 9.9-3.9 16-10.2 16-21.4V17L32 12z" fill="#0b1d4d" opacity="0.28" />
+  <path d="M22 32.5 29 39l13-13" fill="none" stroke="#ffffff" stroke-linecap="round" stroke-linejoin="round" stroke-width="5" />
+</svg>
