@@ -1,10 +1,11 @@
 import { FindingCard } from "./FindingCard";
 import { motion } from "framer-motion";
-import { staggerContainer } from "@/animations/motion-presets";
+import { cascadeContainer } from "@/animations/motion-presets";
 import { useScan } from "@/hooks/useScanStore";
-import { ShieldCheck, Inbox } from "lucide-react";
+import { ShieldCheck, Inbox, Search, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { duration } from "@/animations/motion-presets";
+import { useState } from "react";
 
 const FILTERS = [
   { id: "all", label: "All" },
@@ -22,11 +23,29 @@ const SEVERITY_PILLS = [
 
 export function FindingsPanel() {
   const { result, isScanning, selectedFinding, setSelectedFinding, activeFilter, setActiveFilter } = useScan();
+  const [searchQuery, setSearchQuery] = useState("");
 
   const findings = result?.findings.filter((f) => {
-    if (activeFilter === "all") return true;
-    return f.category === activeFilter || f.severity === activeFilter;
+    // Filter by category/severity
+    if (activeFilter !== "all") {
+      const matchesFilter = f.category === activeFilter || f.severity === activeFilter;
+      if (!matchesFilter) return false;
+    }
+    
+    // Filter by search query
+    if (searchQuery.trim()) {
+      const query = searchQuery.toLowerCase();
+      return (
+        f.title.toLowerCase().includes(query) ||
+        f.description.toLowerCase().includes(query) ||
+        f.line.toString().includes(query)
+      );
+    }
+    
+    return true;
   }) ?? [];
+
+  const hasSearch = searchQuery.trim().length > 0;
 
   return (
     <motion.div
@@ -36,13 +55,40 @@ export function FindingsPanel() {
       className="flex flex-col h-full border-x border-border"
     >
       {/* Header */}
-      <div className="px-3 py-2.5 border-b border-border shrink-0" style={{ backgroundColor: "hsl(var(--surface-1))" }}>
-        <div className="flex items-center gap-2 mb-2">
+      <div className="px-3 py-2.5 border-b border-border shrink-0 space-y-2" style={{ backgroundColor: "hsl(var(--surface-1))" }}>
+        <div className="flex items-center gap-2">
           <ShieldCheck className="h-3.5 w-3.5 text-primary" />
           <span className="text-[13px] font-semibold text-foreground">Findings</span>
           {result && (
-            <span className="text-2xs font-mono text-muted-foreground ml-auto tabular-nums">{result.stats.total}</span>
+            <span className="text-2xs font-mono text-muted-foreground ml-auto tabular-nums">{findings.length}/{result.stats.total}</span>
           )}
+        </div>
+
+        {/* Search input */}
+        <div className="relative">
+          <div className="relative flex items-center">
+            <Search className="absolute left-2 h-3 w-3 text-muted-foreground/50 pointer-events-none" />
+            <input
+              type="text"
+              placeholder="Search findings..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className={cn(
+                "w-full pl-7 pr-7 py-1.5 text-xs rounded-md border border-border",
+                "bg-background/50 text-foreground placeholder-muted-foreground/50",
+                "focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-transparent",
+                "transition-all duration-150"
+              )}
+            />
+            {hasSearch && (
+              <button
+                onClick={() => setSearchQuery("")}
+                className="absolute right-2 p-0.5 text-muted-foreground hover:text-foreground transition-colors"
+              >
+                <X className="h-3 w-3" />
+              </button>
+            )}
+          </div>
         </div>
 
         {/* Category filters */}
@@ -65,7 +111,7 @@ export function FindingsPanel() {
 
         {/* Severity quick-stats when result exists */}
         {result && (
-          <div className="flex gap-2 mt-2">
+          <div className="flex gap-2">
             {SEVERITY_PILLS.map((s) => {
               const count = result.stats[s.id as keyof typeof result.stats] as number;
               if (count === 0) return null;
@@ -101,7 +147,7 @@ export function FindingsPanel() {
         )}
 
         {!isScanning && findings.length > 0 && (
-          <motion.div variants={staggerContainer} initial="hidden" animate="visible" className="space-y-0.5">
+          <motion.div variants={cascadeContainer} initial="hidden" animate="visible" className="space-y-0.5">
             {findings.map((f, i) => (
               <FindingCard
                 key={f.id}

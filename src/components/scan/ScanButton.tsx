@@ -15,6 +15,7 @@ export function ScanButton({ className }: { className?: string }) {
         "hover:brightness-110 active:scale-[0.97]",
         "disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:brightness-100",
         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1",
+        isScanning && "animate-scan-pulse",
         className
       )}
     >
