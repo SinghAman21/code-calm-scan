@@ -55,7 +55,7 @@ function Hero() {
           initial="hidden"
           animate="visible"
           custom={0}
-          className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border border-border text-2xs text-muted-foreground mb-6"
+          className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border border-border text-2xs text-muted-foreground mb-6 bg-primary/[0.03]"
         >
           <Cpu className="h-3 w-3 text-primary" />
           Local-first static analysis
@@ -66,10 +66,11 @@ function Hero() {
           initial="hidden"
           animate="visible"
           custom={0.5}
-          className="text-4xl sm:text-5xl md:text-[56px] font-bold text-foreground tracking-[-0.035em] leading-[1.08] mb-5 text-balance"
+          className="text-4xl sm:text-5xl md:text-6xl font-display font-bold text-foreground tracking-[-0.04em] leading-[1.05] mb-5 text-balance"
         >
-          Catch vulnerabilities
-          <br />
+          Catch<br className="hidden md:block" />
+          vulnerabilities
+          <br className="md:hidden" />
           <span className="text-primary">before they ship</span>
         </motion.h1>
 
@@ -78,7 +79,7 @@ function Hero() {
           initial="hidden"
           animate="visible"
           custom={1}
-          className="text-base md:text-[17px] text-muted-foreground max-w-lg mx-auto mb-8 leading-relaxed text-balance"
+          className="text-base md:text-lg text-muted-foreground max-w-xl mx-auto mb-8 leading-relaxed text-balance font-[500]"
         >
           Paste code. Get instant security analysis, bug detection, and minimal safe patches.
           Everything runs locally — your code never leaves your machine.
@@ -89,21 +90,21 @@ function Hero() {
           initial="hidden"
           animate="visible"
           custom={1.5}
-          className="flex items-center justify-center gap-3"
+          className="flex items-center justify-center gap-3 flex-wrap"
         >
           <Link
             to="/app"
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-primary text-primary-foreground font-medium text-[14px] hover:brightness-110 active:scale-[0.98] transition-all duration-150"
+            className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-primary text-primary-foreground font-semibold text-[14px] hover:brightness-110 active:scale-[0.98] transition-all duration-150 shadow-lg shadow-primary/20"
           >
             Open scanner
             <ArrowRight className="h-4 w-4" />
           </Link>
-          {/* <Link
-            to="/playground"
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg border border-border text-[14px] text-foreground hover:bg-accent transition-colors duration-150"
+          <Link
+            to="/rules"
+            className="inline-flex items-center gap-2 px-6 py-3 rounded-lg border border-border text-[14px] text-foreground hover:bg-accent/50 transition-colors duration-150"
           >
-            Try a demo
-          </Link> */}
+            View rules
+          </Link>
         </motion.div>
 
         {/* Code mockup */}
@@ -112,7 +113,7 @@ function Hero() {
           initial="hidden"
           animate="visible"
           custom={2}
-          className="mt-14 rounded-xl border border-border overflow-hidden shadow-xl"
+          className="mt-14 rounded-xl border border-border overflow-hidden shadow-2xl"
           style={{ backgroundColor: "hsl(var(--surface-1))" }}
         >
           {/* Window chrome */}
@@ -126,7 +127,7 @@ function Hero() {
           <div className="grid md:grid-cols-2 divide-x divide-border">
             {/* Vulnerable */}
             <div className="p-4 text-left">
-              <div className="text-2xs uppercase tracking-wider text-muted-foreground/60 font-medium mb-2">Source</div>
+              <div className="text-2xs uppercase tracking-wider text-muted-foreground/60 font-semibold mb-2">Source</div>
               <div className="font-mono text-xs leading-6 space-y-0.5">
                 <CodeLine n={17} dim>{'const query ='}</CodeLine>
                 <CodeLine n={18} severity="critical">
@@ -136,13 +137,13 @@ function Hero() {
               </div>
               <div className="mt-3 flex items-center gap-1.5 px-2 py-1.5 rounded-md bg-destructive/8 border border-destructive/15">
                 <ShieldAlert className="h-3 w-3 text-destructive shrink-0" />
-                <span className="text-2xs text-destructive font-medium">SQL Injection · Critical · Line 18</span>
+                <span className="text-2xs text-destructive font-semibold">SQL Injection · Critical · Line 18</span>
               </div>
             </div>
 
             {/* Fixed */}
             <div className="p-4 text-left">
-              <div className="text-2xs uppercase tracking-wider text-muted-foreground/60 font-medium mb-2">Patched</div>
+              <div className="text-2xs uppercase tracking-wider text-muted-foreground/60 font-semibold mb-2">Patched</div>
               <div className="font-mono text-xs leading-6 space-y-0.5">
                 <CodeLine n={17} add>{'const [rows] = await pool.execute('}</CodeLine>
                 <CodeLine n={18} add>{"  'SELECT * FROM users WHERE id = ?',"}</CodeLine>
@@ -151,7 +152,7 @@ function Hero() {
               </div>
               <div className="mt-3 flex items-center gap-1.5 px-2 py-1.5 rounded-md bg-success/8 border border-success/15">
                 <CheckCircle2 className="h-3 w-3 text-success shrink-0" />
-                <span className="text-2xs text-success font-medium">Parameterized query · Safe</span>
+                <span className="text-2xs text-success font-semibold">Parameterized query · Safe</span>
               </div>
             </div>
           </div>
@@ -246,10 +247,10 @@ function Features() {
           viewport={{ once: true }}
           className="mb-10"
         >
-          <h2 className="text-2xl md:text-3xl font-bold text-foreground tracking-tight mb-2">
+          <h2 className="text-3xl md:text-4xl font-display font-bold text-foreground tracking-[-0.03em] mb-3">
             Static analysis, reimagined
           </h2>
-          <p className="text-[15px] text-muted-foreground max-w-lg">
+          <p className="text-base text-muted-foreground max-w-lg font-[500]">
             Not another linter. A focused audit workspace that surfaces what matters and shows you exactly how to fix it.
           </p>
         </motion.div>
@@ -259,18 +260,18 @@ function Features() {
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true }}
-          className="grid md:grid-cols-2 gap-3"
+          className="grid md:grid-cols-2 gap-4"
         >
           {features.map((f) => (
             <motion.div
               key={f.title}
               variants={staggerItem}
-              className="rounded-lg border border-border p-5 bg-card hover:border-border/80 hover:bg-accent/30 transition-colors duration-150 group"
+              className="rounded-lg border border-border p-6 bg-card hover:border-primary/20 hover:bg-primary/[0.02] transition-all duration-200 group"
             >
-              <div className="w-8 h-8 rounded-lg bg-primary/8 flex items-center justify-center mb-3 group-hover:bg-primary/12 transition-colors">
-                <f.icon className="h-4 w-4 text-primary" strokeWidth={1.8} />
+              <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center mb-4 group-hover:bg-primary/15 transition-colors">
+                <f.icon className="h-5 w-5 text-primary" strokeWidth={1.6} />
               </div>
-              <h3 className="text-[14px] font-semibold text-foreground mb-1 tracking-tight">{f.title}</h3>
+              <h3 className="text-base font-display font-semibold text-foreground mb-2">{f.title}</h3>
               <p className="text-[13px] text-muted-foreground leading-relaxed">{f.desc}</p>
             </motion.div>
           ))}
@@ -295,12 +296,12 @@ function Workflow() {
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true }}
-          className="text-2xl md:text-3xl font-bold text-foreground tracking-tight text-center mb-12"
+          className="text-3xl md:text-4xl font-display font-bold text-foreground tracking-[-0.03em] text-center mb-12"
         >
           Three steps to safer code
         </motion.h2>
 
-        <div className="grid md:grid-cols-3 gap-6 md:gap-10">
+        <div className="grid md:grid-cols-3 gap-8 md:gap-10">
           {steps.map((s, i) => (
             <motion.div
               key={s.num}
@@ -311,8 +312,8 @@ function Workflow() {
               custom={i}
               className="text-center md:text-left"
             >
-              <div className="text-[32px] font-bold font-mono text-primary/15 leading-none mb-2">{s.num}</div>
-              <h3 className="text-[15px] font-semibold text-foreground mb-1.5">{s.title}</h3>
+              <div className="text-5xl md:text-6xl font-display font-bold text-primary/12 leading-none mb-3">{s.num}</div>
+              <h3 className="text-lg font-display font-semibold text-foreground mb-2">{s.title}</h3>
               <p className="text-[13px] text-muted-foreground leading-relaxed">{s.desc}</p>
             </motion.div>
           ))}
@@ -331,7 +332,7 @@ function Languages() {
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true }}
-          className="text-2xl md:text-3xl font-bold text-foreground tracking-tight mb-8"
+          className="text-3xl md:text-4xl font-display font-bold text-foreground tracking-[-0.03em] mb-10"
         >
           Multi-language support
         </motion.h2>
@@ -340,13 +341,13 @@ function Languages() {
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true }}
-          className="flex flex-wrap justify-center gap-2"
+          className="flex flex-wrap justify-center gap-2.5"
         >
           {SUPPORTED_LANGUAGES.map((l) => (
             <motion.div
               key={l.id}
               variants={staggerItem}
-              className="px-3 py-1.5 rounded-md border border-border text-[13px] text-foreground/80 font-mono bg-card hover:border-primary/20 transition-colors duration-150"
+              className="px-3.5 py-2 rounded-lg border border-border text-sm text-foreground/80 font-mono bg-card hover:border-primary/30 hover:bg-primary/[0.03] transition-all duration-150"
             >
               {l.label}
             </motion.div>
@@ -361,18 +362,19 @@ function Privacy() {
   return (
     <section className="py-16 md:py-24 px-6 border-y border-border/40" style={{ backgroundColor: "hsl(var(--surface-1))" }}>
       <div className="max-w-2xl mx-auto text-center">
-        <div className="w-10 h-10 rounded-xl bg-primary/8 flex items-center justify-center mx-auto mb-4">
-          <Lock className="h-5 w-5 text-primary" strokeWidth={1.8} />
+        <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mx-auto mb-5">
+          <Lock className="h-6 w-6 text-primary" strokeWidth={1.6} />
         </div>
-        <h2 className="text-2xl md:text-3xl font-bold text-foreground tracking-tight mb-3">Your code stays yours</h2>
-        <p className="text-[15px] text-muted-foreground leading-relaxed mb-6">
+        <h2 className="text-3xl md:text-4xl font-display font-bold text-foreground tracking-[-0.03em] mb-3">Your code stays yours</h2>
+        <p className="text-base text-muted-foreground leading-relaxed mb-8 font-[500]">
           CodeAudit runs entirely on your machine. No code is sent to external servers.
           No telemetry, no cloud storage, no third-party access. Ever.
         </p>
-        <div className="flex items-center justify-center gap-5 md:gap-8 text-[13px] text-muted-foreground">
+        <div className="flex flex-col md:flex-row items-center justify-center gap-6 text-sm">
           {["Zero data collection", "Offline capable", "Open rules"].map((t) => (
-            <span key={t} className="flex items-center gap-1.5">
-              <CheckCircle2 className="h-3.5 w-3.5 text-success" strokeWidth={2} /> {t}
+            <span key={t} className="flex items-center gap-2 text-muted-foreground">
+              <CheckCircle2 className="h-4 w-4 text-primary shrink-0" strokeWidth={2} />
+              <span className="font-[500]">{t}</span>
             </span>
           ))}
         </div>
@@ -385,22 +387,22 @@ function CTAFooter() {
   return (
     <section className="py-16 md:py-24 px-6">
       <div className="max-w-2xl mx-auto text-center">
-        <h2 className="text-2xl md:text-3xl font-bold text-foreground tracking-tight mb-3">Ready to audit your code?</h2>
-        <p className="text-[15px] text-muted-foreground mb-7">No signup required. No API keys. Just paste and scan.</p>
+        <h2 className="text-3xl md:text-4xl font-display font-bold text-foreground tracking-[-0.03em] mb-3">Ready to audit your code?</h2>
+        <p className="text-base text-muted-foreground mb-8 font-[500]">No signup required. No API keys. Just paste and scan.</p>
         <Link
           to="/app"
-          className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-primary text-primary-foreground font-medium text-[15px] hover:brightness-110 active:scale-[0.98] transition-all duration-150"
+          className="inline-flex items-center gap-2 px-7 py-3 rounded-lg bg-primary text-primary-foreground font-semibold text-base hover:brightness-110 active:scale-[0.98] transition-all duration-150 shadow-lg shadow-primary/25"
         >
           Open scanner <ArrowRight className="h-4 w-4" />
         </Link>
       </div>
 
-      <div className="max-w-4xl mx-auto mt-14 pt-6 border-t border-border/50 flex items-center justify-between text-2xs text-muted-foreground/60">
+      <div className="max-w-4xl mx-auto mt-14 pt-6 border-t border-border/50 flex items-center justify-between text-xs text-muted-foreground/60">
         <div className="flex items-center gap-1.5">
-          <Shield className="h-3.5 w-3.5 text-primary/50" />
-          <span className="font-medium">CodeAudit</span>
+          <Shield className="h-4 w-4 text-primary/60" />
+          <span className="font-semibold">CodeAudit</span>
         </div>
-        <span>Built for developers who ship secure code.</span>
+        <span className="hidden md:block">Built for developers who ship secure code.</span>
       </div>
     </section>
   );

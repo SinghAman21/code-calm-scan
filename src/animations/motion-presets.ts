@@ -76,6 +76,112 @@ export const scaleIn = {
   visible: { scale: 1, opacity: 1, transition: { duration: duration.normal, ease: EASE_ENTER } },
 };
 
+// ============================================
+// SIGNATURE ANIMATIONS FOR CODE CALM SCAN
+// ============================================
+
+/**
+ * CASCADING FINDINGS ANIMATION
+ * Used in FindingsPanel when findings load.
+ * Each finding slides in with a spring rhythm, creating
+ * a "wave" of discoveries. Visual metaphor: scanning down the code.
+ */
+export const cascadeContainer = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.06,
+      delayChildren: 0.1,
+    },
+  },
+};
+
+export const cascadeItem = {
+  hidden: { opacity: 0, x: -20, filter: "blur(4px)" },
+  visible: {
+    opacity: 1,
+    x: 0,
+    filter: "blur(0px)",
+    transition: {
+      duration: duration.normal,
+      ease: EASE_ENTER,
+      type: "spring" as const,
+      stiffness: 120,
+      damping: 14,
+    },
+  },
+};
+
+/**
+ * BLOOM EFFECT FOR SELECTED FINDING
+ * When a finding is selected, its left border "blooms" outward
+ * and the card gains subtle elevation. Indicates focus intent.
+ */
+export const bloomBorder = {
+  idle: {
+    borderLeftWidth: "2px",
+    transition: { duration: 0.2, ease: EASE_DEFAULT },
+  },
+  selected: {
+    borderLeftWidth: "4px",
+    transition: { duration: 0.2, ease: EASE_ENTER },
+  },
+};
+
+export const bloomElevation = {
+  idle: {
+    boxShadow: "0 1px 2px 0 rgba(0, 0, 0, 0.05)",
+    transition: { duration: 0.2, ease: EASE_DEFAULT },
+  },
+  selected: {
+    boxShadow: "0 4px 12px 0 rgba(23, 78, 79, 0.15)",
+    transition: { duration: 0.2, ease: EASE_ENTER },
+  },
+};
+
+/**
+ * SCAN BUTTON PULSE
+ * While scanning, the button pulses with the primary color.
+ * Creates a sense of active searching. Loops until scan completes.
+ */
+export const scanPulse = {
+  scanning: {
+    boxShadow: [
+      "0 0 0 0 rgba(23, 78, 79, 0.7)",
+      "0 0 0 10px rgba(23, 78, 79, 0)",
+    ],
+    transition: {
+      duration: 1.5,
+      ease: "easeOut",
+      repeat: Infinity,
+    },
+  },
+  idle: {
+    boxShadow: "0 1px 2px 0 rgba(0, 0, 0, 0.05)",
+  },
+};
+
+/**
+ * HOVER LIFT EFFECT
+ * Interactive elements gain subtle lift on hover,
+ * creating a tactile "clickable" sensation.
+ */
+export const hoverLift = {
+  rest: {
+    y: 0,
+    boxShadow: "0 1px 2px 0 rgba(0, 0, 0, 0.05)",
+  },
+  hover: {
+    y: -2,
+    boxShadow: "0 8px 16px 0 rgba(0, 0, 0, 0.1)",
+    transition: { duration: duration.fast, ease: EASE_ENTER },
+  },
+  tap: {
+    y: 0,
+  },
+};
+
 // Utility: check if reduced motion is preferred
 export function prefersReducedMotion(): boolean {
   if (typeof window === "undefined") return false;

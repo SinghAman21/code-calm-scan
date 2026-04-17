@@ -4,21 +4,14 @@ import { ScanButton } from "@/components/scan/ScanButton";
 import { ThemeToggle } from "@/components/common/ThemeToggle";
 import { useScan } from "@/hooks/useScanStore";
 import { SUPPORTED_LANGUAGES } from "@/data/mock-data";
+import { NAV_ITEMS } from "@/config/routes";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import {
-  Shield, ScanSearch, Clock, ScrollText, FlaskConical, Cog, PanelLeftClose, PanelLeft, Wifi, Eraser,
+  Shield, PanelLeftClose, PanelLeft, Wifi, Eraser,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { useState } from "react";
 import { duration } from "@/animations/motion-presets";
-
-const NAV_ITEMS = [
-  { to: "/app", icon: ScanSearch, label: "New Scan" },
-  { to: "/history", icon: Clock, label: "History" },
-  { to: "/rules", icon: ScrollText, label: "Rules" },
-  // { to: "/playground", icon: FlaskConical, label: "Playground" },
-  { to: "/settings", icon: Cog, label: "Settings" },
-];
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   const location = useLocation();
@@ -67,12 +60,12 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         <nav className={cn("flex-1 py-2", collapsed ? "px-1.5" : "px-2")}>
           <div className="space-y-0.5">
             {NAV_ITEMS.map((item) => {
-              const active = location.pathname === item.to ||
-                (item.to !== "/app" && location.pathname.startsWith(item.to));
+              const active = location.pathname === item.path ||
+                (item.path !== "/app" && location.pathname.startsWith(item.path));
               return (
                 <Link
-                  key={item.to}
-                  to={item.to}
+                  key={item.path}
+                  to={item.path}
                   title={collapsed ? item.label : undefined}
                   className={cn(
                     "flex items-center rounded-md transition-colors duration-150",
@@ -82,8 +75,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                       : "text-sidebar-foreground hover:text-foreground hover:bg-sidebar-accent"
                   )}
                 >
-                  <item.icon className={cn("shrink-0", collapsed ? "h-4 w-4" : "h-[15px] w-[15px]")} strokeWidth={active ? 2.2 : 1.8} />
-                  {!collapsed && (
+                  {item.icon && <item.icon className={cn("shrink-0", collapsed ? "h-4 w-4" : "h-[15px] w-[15px]")} strokeWidth={active ? 2.2 : 1.8} />}
+                  {!collapsed && item.label && (
                     <span className={cn("text-[13px] truncate", active && "font-medium")}>{item.label}</span>
                   )}
                 </Link>

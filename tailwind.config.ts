@@ -12,11 +12,15 @@ export default {
     },
     extend: {
       fontFamily: {
-        sans: ["Inter", "system-ui", "-apple-system", "sans-serif"],
+        sans: ["IBM Plex Sans", "system-ui", "-apple-system", "sans-serif"],
+        display: ["Syne", "system-ui", "-apple-system", "sans-serif"],
         mono: ["JetBrains Mono", "ui-monospace", "monospace"],
       },
       fontSize: {
         "2xs": ["0.75rem", { lineHeight: "1rem" }],
+      },
+      textUnderlineOffset: {
+        3: "3px",
       },
       colors: {
         border: "hsl(var(--border))",
@@ -117,12 +121,24 @@ export default {
           "90%": { opacity: "1" },
           "100%": { transform: "translateY(100%)", opacity: "0" },
         },
+        "scan-pulse": {
+          "0%": {
+            boxShadow: "0 0 0 0 rgba(23, 78, 79, 0.7)",
+          },
+          "70%": {
+            boxShadow: "0 0 0 10px rgba(23, 78, 79, 0)",
+          },
+          "100%": {
+            boxShadow: "0 0 0 0 rgba(23, 78, 79, 0)",
+          },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
         "pulse-subtle": "pulse-subtle 2s ease-in-out infinite",
         "scan-sweep": "scan-sweep 1.8s ease-in-out",
+        "scan-pulse": "scan-pulse 1.5s ease-out infinite",
       },
     },
   },
