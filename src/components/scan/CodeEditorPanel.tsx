@@ -15,19 +15,25 @@ export function CodeEditorPanel() {
       initial={{ opacity: 0, y: 6 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: duration.normal, delay: 0.1 }}
-      className="h-full flex flex-col relative"
+      className="panel-shell relative flex h-full min-h-[420px] flex-col overflow-hidden rounded-[2rem]"
     >
-      {/* Editor header */}
-      <div className="h-9 px-3 border-b border-border flex items-center justify-between shrink-0" style={{ backgroundColor: "hsl(var(--surface-1))" }}>
-        <div className="flex items-center gap-1.5">
-          <FileCode2 className="h-3.5 w-3.5 text-muted-foreground" />
-          <span className="text-2xs font-medium text-muted-foreground uppercase tracking-wider">Source</span>
+      <div className="flex items-center justify-between border-b border-border/70 px-4 py-4 shrink-0" style={{ backgroundColor: "hsl(var(--surface-1) / 0.82)" }}>
+        <div className="flex items-center gap-3">
+          <div className="flex h-10 w-10 items-center justify-center rounded-[1rem] border border-primary/20 bg-primary/10 text-primary">
+            <FileCode2 className="h-4 w-4" />
+          </div>
+          <div>
+            <div className="panel-title">Source stage</div>
+            <div className="mt-1 text-sm font-medium text-foreground capitalize">{language}</div>
+          </div>
         </div>
-        <span className="text-2xs text-muted-foreground font-mono tabular-nums">{lineCount} lines</span>
+        <div className="rounded-full border border-border/80 px-3 py-1 text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+          {lineCount} lines
+        </div>
       </div>
 
-      {/* Editor body */}
-      <div className="flex-1 min-h-0" style={{ backgroundColor: "hsl(var(--code-bg))" }}>
+      <div className="relative flex-1 min-h-0" style={{ backgroundColor: "hsl(var(--code-bg))" }}>
+        <div className="pointer-events-none absolute inset-x-0 top-0 z-[1] h-16 bg-gradient-to-b from-background/20 to-transparent" />
         <Editor
           height="100%"
           language={language}
@@ -66,11 +72,13 @@ export function CodeEditorPanel() {
         />
       </div>
 
-      {/* Scan overlay */}
       {isScanning && (
         <div className="absolute inset-0 pointer-events-none z-10">
-          <div className="absolute inset-0 bg-background/20 backdrop-blur-[1px]" />
-          <div className="scan-line absolute left-0 right-0 h-[2px] animate-scan-sweep" />
+          <div className="absolute inset-0 bg-background/26 backdrop-blur-[1px]" />
+          <div className="absolute left-6 right-6 top-16 rounded-full border border-primary/20 bg-primary/10 px-4 py-2 text-[11px] uppercase tracking-[0.18em] text-primary shadow-[var(--shadow-soft)]">
+            tracing threat signatures
+          </div>
+          <div className="scan-line absolute left-0 right-0 top-24 h-[2px] animate-scan-sweep" />
         </div>
       )}
     </motion.div>

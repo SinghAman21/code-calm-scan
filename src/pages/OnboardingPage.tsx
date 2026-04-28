@@ -38,17 +38,31 @@ export default function OnboardingPage() {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="min-h-screen bg-background flex items-center justify-center p-6"
+      className="relative flex min-h-screen items-center justify-center overflow-hidden bg-background p-6"
     >
-      <div className="max-w-sm w-full">
-        {/* Progress bar */}
-        <div className="flex gap-1.5 mb-10 justify-center">
+      <div className="pointer-events-none absolute inset-0 ink-grid opacity-25" />
+      <div className="panel-shell relative max-w-4xl w-full overflow-hidden rounded-[2.2rem]">
+        <div className="grid lg:grid-cols-[0.86fr_1.14fr]">
+          <div className="border-b border-border/70 p-8 lg:border-b-0 lg:border-r">
+            <div className="panel-title">Onboarding</div>
+            <h2 className="mt-4 text-[clamp(2.2rem,4vw,4rem)] font-display uppercase leading-[0.9] tracking-[-0.1em] text-foreground">
+              Enter the
+              <br />
+              audit room.
+            </h2>
+            <p className="mt-4 text-sm leading-7 text-muted-foreground">
+              A short guided sequence for developers who want the product language before the first scan.
+            </p>
+          </div>
+
+          <div className="p-8">
+        <div className="mb-10 flex justify-center gap-1.5">
           {STEPS.map((_, i) => (
             <div
               key={i}
               className={cn(
-                "h-[3px] rounded-full transition-all duration-300",
-                i === step ? "w-8 bg-primary" : i < step ? "w-3 bg-primary/40" : "w-3 bg-border"
+                "h-[4px] rounded-full transition-all duration-300",
+                i === step ? "w-10 bg-primary" : i < step ? "w-4 bg-primary/40" : "w-4 bg-border"
               )}
             />
           ))}
@@ -63,11 +77,11 @@ export default function OnboardingPage() {
             transition={{ duration: duration.normal }}
             className="text-center"
           >
-            <div className="w-14 h-14 rounded-2xl bg-primary/8 flex items-center justify-center mx-auto mb-5">
+            <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-[1.5rem] border border-primary/20 bg-primary/10">
               <current.icon className="h-7 w-7 text-primary" strokeWidth={1.6} />
             </div>
-            <h1 className="text-xl font-bold text-foreground tracking-tight mb-2">{current.title}</h1>
-            <p className="text-[14px] text-muted-foreground leading-relaxed mb-8 text-balance">{current.desc}</p>
+            <h1 className="mb-2 text-2xl font-display uppercase tracking-[-0.08em] text-foreground">{current.title}</h1>
+            <p className="mb-8 text-[14px] leading-relaxed text-muted-foreground text-balance">{current.desc}</p>
           </motion.div>
         </AnimatePresence>
 
@@ -83,18 +97,20 @@ export default function OnboardingPage() {
           {step < STEPS.length - 1 ? (
             <button
               onClick={() => setStep(step + 1)}
-              className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-primary text-primary-foreground text-[13px] font-medium hover:brightness-110 active:scale-[0.97] transition-all duration-150"
+              className="magnetic-hover flex items-center gap-1.5 rounded-full border border-primary/35 bg-primary px-5 py-2.5 text-[13px] font-medium text-primary-foreground"
             >
               Continue <ArrowRight className="h-3.5 w-3.5" />
             </button>
           ) : (
             <button
               onClick={() => navigate("/app")}
-              className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-primary text-primary-foreground text-[13px] font-medium hover:brightness-110 active:scale-[0.97] transition-all duration-150"
+              className="magnetic-hover flex items-center gap-1.5 rounded-full border border-primary/35 bg-primary px-5 py-2.5 text-[13px] font-medium text-primary-foreground"
             >
               Open scanner <ArrowRight className="h-3.5 w-3.5" />
             </button>
           )}
+        </div>
+          </div>
         </div>
       </div>
     </motion.div>

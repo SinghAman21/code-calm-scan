@@ -52,19 +52,24 @@ export function FindingsPanel() {
       initial={{ opacity: 0, y: 6 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: duration.normal, delay: 0.15 }}
-      className="flex flex-col h-full border-x border-border"
+      className="panel-shell flex h-full min-h-[420px] flex-col overflow-hidden rounded-[2rem]"
     >
-      {/* Header */}
-      <div className="px-3 py-2.5 border-b border-border shrink-0 space-y-2" style={{ backgroundColor: "hsl(var(--surface-1))" }}>
-        <div className="flex items-center gap-2">
-          <ShieldCheck className="h-3.5 w-3.5 text-primary" />
-          <span className="text-[13px] font-semibold text-foreground">Findings</span>
+      <div className="space-y-3 border-b border-border/70 px-4 py-4 shrink-0" style={{ backgroundColor: "hsl(var(--surface-1) / 0.82)" }}>
+        <div className="flex items-center gap-3">
+          <div className="flex h-10 w-10 items-center justify-center rounded-[1rem] border border-primary/20 bg-primary/10 text-primary">
+            <ShieldCheck className="h-4 w-4" />
+          </div>
+          <div>
+            <div className="panel-title">Findings stack</div>
+            <div className="mt-1 text-sm font-medium text-foreground">Risk signals</div>
+          </div>
           {result && (
-            <span className="text-2xs font-mono text-muted-foreground ml-auto tabular-nums">{findings.length}/{result.stats.total}</span>
+            <span className="ml-auto rounded-full border border-border/80 px-3 py-1 text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+              {findings.length}/{result.stats.total}
+            </span>
           )}
         </div>
 
-        {/* Search input */}
         <div className="relative">
           <div className="relative flex items-center">
             <Search className="absolute left-2 h-3 w-3 text-muted-foreground/50 pointer-events-none" />
@@ -74,8 +79,7 @@ export function FindingsPanel() {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className={cn(
-                "w-full pl-7 pr-7 py-1.5 text-xs rounded-md border border-border",
-                "bg-background/50 text-foreground placeholder-muted-foreground/50",
+                "w-full rounded-[1rem] border border-border/80 bg-background/50 py-2.5 pl-8 pr-8 text-xs text-foreground placeholder-muted-foreground/50",
                 "focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-transparent",
                 "transition-all duration-150"
               )}
@@ -91,14 +95,13 @@ export function FindingsPanel() {
           </div>
         </div>
 
-        {/* Category filters */}
-        <div className="flex gap-0.5 p-0.5 rounded-md bg-muted/50">
+        <div className="flex gap-1 rounded-[1rem] border border-border/70 bg-muted/35 p-1">
           {FILTERS.map((f) => (
             <button
               key={f.id}
               onClick={() => setActiveFilter(f.id)}
               className={cn(
-                "flex-1 px-1.5 py-1 text-2xs rounded-[3px] font-medium transition-colors duration-150",
+                "flex-1 rounded-[0.8rem] px-2 py-2 text-2xs font-medium transition-colors duration-150",
                 activeFilter === f.id
                   ? "bg-background text-foreground shadow-sm"
                   : "text-muted-foreground hover:text-foreground"
@@ -109,9 +112,8 @@ export function FindingsPanel() {
           ))}
         </div>
 
-        {/* Severity quick-stats when result exists */}
         {result && (
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-2">
             {SEVERITY_PILLS.map((s) => {
               const count = result.stats[s.id as keyof typeof result.stats] as number;
               if (count === 0) return null;
@@ -120,8 +122,8 @@ export function FindingsPanel() {
                   key={s.id}
                   onClick={() => setActiveFilter(s.id)}
                   className={cn(
-                    "flex items-center gap-1 text-2xs text-muted-foreground transition-colors",
-                    activeFilter === s.id && "text-foreground"
+                    "flex items-center gap-2 rounded-full border border-border/80 px-2.5 py-1.5 text-2xs text-muted-foreground transition-colors",
+                    activeFilter === s.id && "border-primary/20 bg-primary/8 text-foreground"
                   )}
                 >
                   <span className={cn("h-1.5 w-1.5 rounded-full", s.color)} />
@@ -133,8 +135,7 @@ export function FindingsPanel() {
         )}
       </div>
 
-      {/* Findings list */}
-      <div className="flex-1 overflow-y-auto px-1.5 py-1.5">
+      <div className="flex-1 overflow-y-auto px-3 py-3">
         {isScanning && <SkeletonFindings />}
 
         {!isScanning && !result && <EmptyState />}
@@ -147,7 +148,7 @@ export function FindingsPanel() {
         )}
 
         {!isScanning && findings.length > 0 && (
-          <motion.div variants={cascadeContainer} initial="hidden" animate="visible" className="space-y-0.5">
+          <motion.div variants={cascadeContainer} initial="hidden" animate="visible" className="space-y-2">
             {findings.map((f, i) => (
               <FindingCard
                 key={f.id}
@@ -166,15 +167,15 @@ export function FindingsPanel() {
 
 function SkeletonFindings() {
   return (
-    <div className="space-y-1.5 p-1">
+    <div className="space-y-2 p-1">
       {Array.from({ length: 6 }).map((_, i) => (
         <div
           key={i}
-          className="rounded-md p-3 skeleton-shimmer"
+          className="skeleton-shimmer rounded-[1.2rem] border border-border/60 p-3"
           style={{
-            backgroundColor: "hsl(var(--muted))",
+            backgroundColor: "hsl(var(--muted) / 0.55)",
             animationDelay: `${i * 80}ms`,
-            height: "56px",
+            height: "88px",
           }}
         />
       ))}
@@ -185,7 +186,7 @@ function SkeletonFindings() {
 function EmptyState() {
   return (
     <div className="flex flex-col items-center justify-center h-full px-6 text-center">
-      <div className="w-10 h-10 rounded-xl bg-muted flex items-center justify-center mb-3">
+      <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-[1.2rem] border border-border/70 bg-muted/40">
         <Inbox className="h-5 w-5 text-muted-foreground/50" />
       </div>
       <p className="text-[13px] text-muted-foreground font-medium mb-1">No findings yet</p>

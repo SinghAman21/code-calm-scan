@@ -73,18 +73,31 @@ export default function SettingsPage() {
 
   return (
     <AppShell>
-      <motion.div {...pageTransition} className="h-full overflow-y-auto p-6">
-        <div className="max-w-xl mx-auto">
-          <h1 className="text-2xl font-bold text-foreground tracking-tight mb-1">Settings</h1>
-          <p className="text-sm text-muted-foreground mb-8">Configure the scanner and editor preferences.</p>
+      <motion.div {...pageTransition} className="h-full overflow-y-auto p-4 md:p-6">
+        <div className="mx-auto max-w-5xl">
+          <div className="mb-8 grid gap-4 lg:grid-cols-[1.1fr_0.9fr]">
+            <div className="panel-shell rounded-[2rem] p-6">
+              <div className="panel-title">Calibration room</div>
+              <h1 className="mt-3 text-[clamp(2.2rem,4vw,4rem)] font-display uppercase leading-[0.88] tracking-[-0.1em] text-foreground">
+                Tune the
+                <br />
+                atmosphere.
+              </h1>
+            </div>
+            <div className="panel-shell rounded-[2rem] p-6">
+              <p className="text-sm leading-7 text-muted-foreground">
+                Settings are framed like equipment controls so the route feels part of the same world, not a separate form page.
+              </p>
+            </div>
+          </div>
 
           <div className="space-y-6">
             {sections.map((section, si) => (
               <motion.div key={section.title} variants={fadeUp} initial="hidden" animate="visible" custom={si}>
-                <h2 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">{section.title}</h2>
-                <div className="rounded-lg border border-border bg-card divide-y divide-border">
+                <h2 className="mb-2 text-xs font-semibold uppercase tracking-[0.22em] text-muted-foreground">{section.title}</h2>
+                <div className="panel-shell divide-y divide-border/70 rounded-[1.8rem]">
                   {section.items.map((item) => (
-                    <div key={item.label} className="flex items-center justify-between gap-3 px-4 py-3.5">
+                    <div key={item.label} className="flex items-center justify-between gap-3 px-5 py-4">
                       <div className="min-w-0">
                         <div className="text-sm font-medium text-foreground">{item.label}</div>
                         <div className="text-xs text-muted-foreground">{item.desc}</div>
@@ -107,13 +120,13 @@ function Toggle({ checked, onChange }: { checked: boolean; onChange: () => void 
     <button
       onClick={onChange}
       className={cn(
-        "relative w-11 h-6 rounded-full transition-colors duration-200 shrink-0",
-        checked ? "bg-primary" : "bg-border"
+        "relative h-7 w-14 shrink-0 rounded-full border transition-colors duration-200",
+        checked ? "border-primary/30 bg-primary" : "border-border bg-border/70"
       )}
     >
       <span className={cn(
         "absolute top-0.5 h-5 w-5 rounded-full bg-background shadow-sm transition-transform duration-200",
-        checked ? "translate-x-[22px]" : "translate-x-0.5"
+        checked ? "translate-x-[30px]" : "translate-x-0.5"
       )} />
     </button>
   );
@@ -134,14 +147,14 @@ function NumberStepper({
     <div className="inline-flex items-center gap-2">
       <button
         onClick={() => onChange(Math.max(min, value - 1))}
-        className="h-7 w-7 rounded-md border border-border text-sm hover:bg-accent"
+        className="magnetic-hover h-8 w-8 rounded-full border border-border text-sm hover:bg-accent"
       >
         -
       </button>
       <span className="min-w-10 text-center text-xs text-foreground font-mono tabular-nums">{value}px</span>
       <button
         onClick={() => onChange(Math.min(max, value + 1))}
-        className="h-7 w-7 rounded-md border border-border text-sm hover:bg-accent"
+        className="magnetic-hover h-8 w-8 rounded-full border border-border text-sm hover:bg-accent"
       >
         +
       </button>

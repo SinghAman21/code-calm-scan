@@ -29,16 +29,20 @@ export function DiffPanel() {
       initial={{ opacity: 0, y: 6 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: duration.normal, delay: 0.2 }}
-      className="flex flex-col h-full"
+      className="panel-shell flex h-full min-h-[420px] flex-col overflow-hidden rounded-[2rem]"
     >
-      {/* Tabs */}
-      <div className="h-9 flex items-center border-b border-border px-1 shrink-0" style={{ backgroundColor: "hsl(var(--surface-1))" }}>
+      <div className="flex items-center justify-between border-b border-border/70 px-3 py-3 shrink-0" style={{ backgroundColor: "hsl(var(--surface-1) / 0.82)" }}>
+        <div className="pl-1">
+          <div className="panel-title">Patch theater</div>
+          <div className="mt-1 text-sm font-medium text-foreground">Summary and explanation</div>
+        </div>
+        <div className="flex items-center rounded-[1rem] border border-border/80 bg-background/45 p-1">
         {TABS.map((tab) => (
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
             className={cn(
-              "flex items-center gap-1.5 px-2.5 py-1.5 text-2xs font-medium rounded-[3px] transition-colors duration-150 relative",
+              "relative flex items-center gap-1.5 rounded-[0.9rem] px-3 py-2 text-2xs font-medium transition-colors duration-150",
               activeTab === tab.id
                 ? "text-foreground"
                 : "text-muted-foreground hover:text-foreground"
@@ -49,12 +53,13 @@ export function DiffPanel() {
             {activeTab === tab.id && (
               <motion.span
                 layoutId="diff-tab-indicator"
-                className="absolute -bottom-[5px] left-1 right-1 h-[2px] bg-primary rounded-full"
+                className="absolute inset-0 -z-10 rounded-[0.9rem] bg-primary/10"
                 transition={{ type: "spring", stiffness: 400, damping: 30 }}
               />
             )}
           </button>
         ))}
+        </div>
       </div>
 
       {/* Content */}
@@ -86,7 +91,7 @@ export function DiffPanel() {
 function DiffEmptyState() {
   return (
     <div className="flex flex-col items-center justify-center h-full px-6 text-center">
-      <div className="w-10 h-10 rounded-xl bg-muted flex items-center justify-center mb-3">
+      <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-[1.2rem] border border-border/70 bg-muted/40">
         <FileSearch className="h-5 w-5 text-muted-foreground/50" />
       </div>
       <p className="text-[13px] text-muted-foreground font-medium mb-1">Awaiting scan results</p>
@@ -109,28 +114,25 @@ function SummaryTab() {
   ];
 
   return (
-    <div className="p-4 space-y-4">
-      {/* Severity grid */}
-      <div className="grid grid-cols-4 gap-2">
+    <div className="space-y-4 p-4">
+      <div className="grid grid-cols-2 gap-3 xl:grid-cols-4">
         {stats.map((s) => (
-          <div key={s.label} className={cn("rounded-lg p-2.5 text-center", s.bg)}>
+          <div key={s.label} className={cn("rounded-[1.3rem] border border-border/50 p-3 text-center", s.bg)}>
             <div className={cn("text-xl font-bold font-mono leading-none mb-0.5", s.color)}>{s.value}</div>
-            <div className="text-2xs text-muted-foreground">{s.label}</div>
+            <div className="text-2xs uppercase tracking-[0.18em] text-muted-foreground">{s.label}</div>
           </div>
         ))}
       </div>
 
-      {/* Meta */}
-      <div className="rounded-lg border border-border p-3 space-y-1.5" style={{ backgroundColor: "hsl(var(--surface-inset))" }}>
+      <div className="rounded-[1.5rem] border border-border/70 p-4 space-y-2" style={{ backgroundColor: "hsl(var(--surface-inset))" }}>
         <MetaRow label="Lines scanned" value={String(result.stats.linesScanned)} mono />
         <MetaRow label="Duration" value={`${result.stats.scanDuration}s`} mono />
         <MetaRow label="Language" value={result.language} />
         <MetaRow label="Total issues" value={String(result.stats.total)} mono />
       </div>
 
-      {/* Selected finding preview */}
       {selectedFinding && (
-        <div className="rounded-lg border border-primary/15 p-3" style={{ backgroundColor: "hsl(var(--primary) / 0.04)" }}>
+        <div className="rounded-[1.5rem] border border-primary/15 p-4" style={{ backgroundColor: "hsl(var(--primary) / 0.05)" }}>
           <div className="flex items-center gap-2 mb-1.5">
             <SeverityBadge severity={selectedFinding.severity} />
             <span className="text-[13px] font-medium text-foreground truncate">{selectedFinding.title}</span>
@@ -145,7 +147,7 @@ function SummaryTab() {
 function MetaRow({ label, value, mono }: { label: string; value: string; mono?: boolean }) {
   return (
     <div className="flex items-center justify-between">
-      <span className="text-2xs text-muted-foreground">{label}</span>
+      <span className="text-2xs uppercase tracking-[0.18em] text-muted-foreground">{label}</span>
       <span className={cn("text-2xs text-foreground", mono && "font-mono tabular-nums")}>{value}</span>
     </div>
   );
@@ -256,7 +258,7 @@ function ExplanationTab() {
   }
 
   return (
-    <div className="p-4 space-y-4">
+    <div className="space-y-4 p-4">
       <div>
         <div className="flex items-center gap-2 mb-2">
           <SeverityBadge severity={finding.severity} />
