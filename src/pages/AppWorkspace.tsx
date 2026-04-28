@@ -40,7 +40,7 @@ export default function AppWorkspace() {
 
   return (
     <AppShell>
-      <WorkspaceContainer className="grid grid-cols-1 lg:grid-cols-[1fr_280px_1fr] min-h-0 gap-4 p-4 lg:p-0 lg:gap-0">
+      <WorkspaceContainer className="grid min-h-0 grid-cols-1 gap-4 p-4 md:p-6 xl:grid-cols-[1.12fr_0.78fr_0.98fr]">
         <CodeEditorPanel />
         <FindingsPanel />
         <DiffPanel />

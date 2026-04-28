@@ -1,44 +1,91 @@
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
-import { pageTransition, fadeUp, staggerContainer, staggerItem, duration } from "@/animations/motion-presets";
+import { pageTransition, fadeUp, staggerContainer, staggerItem } from "@/animations/motion-presets";
 import { Link } from "react-router-dom";
 import {
-  Shield, Lock, Zap, Code2, ShieldAlert, Bug, GitCompareArrows,
-  ArrowRight, CheckCircle2, Terminal, Fingerprint, Cpu,
+  Shield,
+  Lock,
+  Zap,
+  Code2,
+  ShieldAlert,
+  Bug,
+  GitCompareArrows,
+  ArrowRight,
+  CheckCircle2,
+  Terminal,
+  Fingerprint,
+  Cpu,
+  Layers3,
+  Waypoints,
+  Radar,
 } from "lucide-react";
 import { SUPPORTED_LANGUAGES } from "@/data/mock-data";
 
+const trustItems = [
+  { icon: Lock, label: "Local-only execution" },
+  { icon: Fingerprint, label: "Zero collection layer" },
+  { icon: Zap, label: "Fast enough for flow state" },
+  { icon: Terminal, label: "Built for code-native teams" },
+];
+
+const featureRows = [
+  {
+    icon: ShieldAlert,
+    title: "Security patterns with editorial clarity",
+    desc: "Critical issues are staged like lead stories, with line context, confidence, and patch intent visible at once.",
+  },
+  {
+    icon: Bug,
+    title: "Bug and quality signals in the same room",
+    desc: "Operational risks, correctness failures, and maintainability drift share one narrative instead of fragmented tabs.",
+  },
+  {
+    icon: GitCompareArrows,
+    title: "Patch review that respects your architecture",
+    desc: "Diffs stay minimal, explainable, and developer-readable so the engine feels collaborative rather than invasive.",
+  },
+];
+
 export default function LandingPage() {
   return (
-    <motion.div {...pageTransition} className="min-h-screen bg-background">
-      <Nav />
+    <motion.div {...pageTransition} className="relative min-h-screen overflow-hidden bg-background">
+      <div className="pointer-events-none absolute inset-0 ink-grid opacity-25" />
+      <HeroNav />
       <Hero />
       <TrustStrip />
-      <Features />
-      <Workflow />
-      <Languages />
-      <Privacy />
+      <FeatureSpread />
+      <ProcessBand />
+      <LanguageWall />
+      <PrivacyBand />
       <CTAFooter />
     </motion.div>
   );
 }
 
-function Nav() {
+function HeroNav() {
   return (
-    <nav className="fixed top-0 w-full z-50 border-b border-border/40 backdrop-blur-xl" style={{ backgroundColor: "hsl(var(--background) / 0.85)" }}>
-      <div className="max-w-6xl mx-auto px-6 h-12 flex items-center justify-between">
-        <Link to="/" className="flex items-center gap-2">
-          <Shield className="h-[18px] w-[18px] text-primary" />
-          <span className="text-[14px] font-semibold text-foreground tracking-tight">CodeAudit</span>
+    <nav className="fixed inset-x-0 top-0 z-50 border-b border-border/60 bg-background/72 backdrop-blur-2xl">
+      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 md:px-8">
+        <Link to="/" className="flex items-center gap-3">
+          <div className="flex h-11 w-11 items-center justify-center rounded-[1.15rem] border border-primary/20 bg-primary/12 text-primary">
+            <Shield className="h-5 w-5" />
+          </div>
+          <div>
+            <div className="font-display text-sm uppercase tracking-[0.26em] text-foreground">Calm Scan</div>
+            <div className="text-[10px] uppercase tracking-[0.24em] text-muted-foreground">Local Security Desk</div>
+          </div>
         </Link>
-        <div className="flex items-center gap-5">
-          <Link to="/rules" className="text-[13px] text-muted-foreground hover:text-foreground transition-colors duration-150">Rules</Link>
-          {/* <Link to="/playground" className="text-[13px] text-muted-foreground hover:text-foreground transition-colors duration-150">Playground</Link> */}
+
+        <div className="flex items-center gap-2 sm:gap-4">
+          <Link to="/rules" className="text-xs uppercase tracking-[0.22em] text-muted-foreground transition-colors hover:text-foreground">
+            Rules
+          </Link>
           <Link
             to="/app"
-            className="text-[13px] px-3.5 py-1.5 rounded-md bg-primary text-primary-foreground font-medium hover:brightness-110 transition-all duration-150"
+            className="magnetic-hover inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-primary-foreground"
           >
-            Open scanner
+            Enter deck
+            <ArrowRight className="h-3.5 w-3.5" />
           </Link>
         </div>
       </div>
@@ -48,111 +95,139 @@ function Nav() {
 
 function Hero() {
   return (
-    <section className="pt-28 pb-16 md:pt-36 md:pb-24 px-6">
-      <div className="max-w-3xl mx-auto text-center">
-        <motion.div
-          variants={fadeUp}
-          initial="hidden"
-          animate="visible"
-          custom={0}
-          className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border border-border text-2xs text-muted-foreground mb-6 bg-primary/[0.03]"
-        >
-          <Cpu className="h-3 w-3 text-primary" />
-          Local-first static analysis
-        </motion.div>
-
-        <motion.h1
-          variants={fadeUp}
-          initial="hidden"
-          animate="visible"
-          custom={0.5}
-          className="text-4xl sm:text-5xl md:text-6xl font-display font-bold text-foreground tracking-[-0.04em] leading-[1.05] mb-5 text-balance"
-        >
-          Catch<br className="hidden md:block" />
-          vulnerabilities
-          <br className="md:hidden" />
-          <span className="text-primary">before they ship</span>
-        </motion.h1>
-
-        <motion.p
-          variants={fadeUp}
-          initial="hidden"
-          animate="visible"
-          custom={1}
-          className="text-base md:text-lg text-muted-foreground max-w-xl mx-auto mb-8 leading-relaxed text-balance font-[500]"
-        >
-          Paste code. Get instant security analysis, bug detection, and minimal safe patches.
-          Everything runs locally — your code never leaves your machine.
-        </motion.p>
-
-        <motion.div
-          variants={fadeUp}
-          initial="hidden"
-          animate="visible"
-          custom={1.5}
-          className="flex items-center justify-center gap-3 flex-wrap"
-        >
-          <Link
-            to="/app"
-            className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-primary text-primary-foreground font-semibold text-[14px] hover:brightness-110 active:scale-[0.98] transition-all duration-150 shadow-lg shadow-primary/20"
+    <section className="relative px-4 pb-20 pt-28 md:px-8 md:pb-28 md:pt-32">
+      <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[1.2fr_0.8fr] lg:items-end">
+        <div className="relative">
+          <motion.div
+            variants={fadeUp}
+            initial="hidden"
+            animate="visible"
+            className="mb-5 inline-flex items-center gap-2 rounded-full border border-primary/15 bg-primary/8 px-3 py-1.5 text-[11px] uppercase tracking-[0.24em] text-muted-foreground"
           >
-            Open scanner
-            <ArrowRight className="h-4 w-4" />
-          </Link>
-          <Link
-            to="/rules"
-            className="inline-flex items-center gap-2 px-6 py-3 rounded-lg border border-border text-[14px] text-foreground hover:bg-accent/50 transition-colors duration-150"
-          >
-            View rules
-          </Link>
-        </motion.div>
+            <Cpu className="h-3.5 w-3.5 text-primary" />
+            Built for developers in review loops
+          </motion.div>
 
-        {/* Code mockup */}
-        <motion.div
-          variants={fadeUp}
-          initial="hidden"
-          animate="visible"
-          custom={2}
-          className="mt-14 rounded-xl border border-border overflow-hidden shadow-2xl"
-          style={{ backgroundColor: "hsl(var(--surface-1))" }}
-        >
-          {/* Window chrome */}
-          <div className="flex items-center gap-1.5 px-4 py-2.5 border-b border-border" style={{ backgroundColor: "hsl(var(--surface-2))" }}>
-            <div className="h-2 w-2 rounded-full bg-muted-foreground/20" />
-            <div className="h-2 w-2 rounded-full bg-muted-foreground/20" />
-            <div className="h-2 w-2 rounded-full bg-muted-foreground/20" />
-            <span className="ml-3 text-2xs text-muted-foreground font-mono tracking-tight">audit-results.js</span>
-          </div>
+          <motion.div variants={fadeUp} initial="hidden" animate="visible" custom={0.2}>
+            <p aria-hidden="true" className="mb-3 text-[clamp(1rem,1.9vw,1.35rem)] uppercase tracking-[0.65em] text-primary/45">
+              scan calm
+            </p>
+            <h1 className="max-w-5xl text-[clamp(3.6rem,11vw,9.2rem)] font-display uppercase leading-[0.82] tracking-[-0.11em] text-foreground">
+              See
+              <span className="ml-[0.08em] inline-block text-transparent [-webkit-text-stroke:1px_hsl(var(--foreground)/0.45)]">
+                risk
+              </span>
+              <br />
+              before it
+              <span className="ml-[0.06em] inline-block italic text-primary">narrates</span>
+              your release.
+            </h1>
+          </motion.div>
 
-          <div className="grid md:grid-cols-2 divide-x divide-border">
-            {/* Vulnerable */}
-            <div className="p-4 text-left">
-              <div className="text-2xs uppercase tracking-wider text-muted-foreground/60 font-semibold mb-2">Source</div>
-              <div className="font-mono text-xs leading-6 space-y-0.5">
-                <CodeLine n={17} dim>{'const query ='}</CodeLine>
-                <CodeLine n={18} severity="critical">
-                  {' `SELECT * FROM users WHERE id = ${id}`'}
-                </CodeLine>
-                <CodeLine n={19} dim>{'db.query(query, (err, res) => {'}</CodeLine>
-              </div>
-              <div className="mt-3 flex items-center gap-1.5 px-2 py-1.5 rounded-md bg-destructive/8 border border-destructive/15">
-                <ShieldAlert className="h-3 w-3 text-destructive shrink-0" />
-                <span className="text-2xs text-destructive font-semibold">SQL Injection · Critical · Line 18</span>
+          <motion.div variants={fadeUp} initial="hidden" animate="visible" custom={0.35} className="mt-8 grid gap-6 lg:grid-cols-[0.78fr_0.22fr]">
+            <p className="max-w-2xl text-base leading-8 text-muted-foreground md:text-lg">
+              Calm Scan turns static analysis into an atmospheric command room: a place where risky lines, safer fixes,
+              and review confidence all arrive with shape, hierarchy, and signal. Everything stays on your machine.
+            </p>
+            <div className="hidden lg:flex lg:items-end lg:justify-end">
+              <div className="rounded-[1.4rem] border border-border/80 px-4 py-3 text-right shadow-[var(--shadow-soft)]" style={{ backgroundColor: "hsl(var(--surface-1) / 0.85)" }}>
+                <div className="panel-title">Tone</div>
+                <div className="mt-2 text-sm uppercase tracking-[0.22em] text-foreground">Industrial editorial</div>
               </div>
             </div>
+          </motion.div>
 
-            {/* Fixed */}
-            <div className="p-4 text-left">
-              <div className="text-2xs uppercase tracking-wider text-muted-foreground/60 font-semibold mb-2">Patched</div>
-              <div className="font-mono text-xs leading-6 space-y-0.5">
-                <CodeLine n={17} add>{'const [rows] = await pool.execute('}</CodeLine>
-                <CodeLine n={18} add>{"  'SELECT * FROM users WHERE id = ?',"}</CodeLine>
-                <CodeLine n={19} add>{'  [id]'}</CodeLine>
-                <CodeLine n={20} add>{')'}</CodeLine>
+          <motion.div variants={fadeUp} initial="hidden" animate="visible" custom={0.55} className="mt-10 flex flex-wrap items-center gap-4">
+            <Link
+              to="/app"
+              className="magnetic-hover inline-flex items-center gap-2 rounded-full border border-primary/35 bg-primary px-6 py-3 text-sm font-semibold uppercase tracking-[0.18em] text-primary-foreground"
+            >
+              Open scanner
+              <ArrowRight className="h-4 w-4" />
+            </Link>
+            <Link
+              to="/history"
+              className="magnetic-hover inline-flex items-center gap-2 rounded-full border border-border/80 px-6 py-3 text-sm font-medium uppercase tracking-[0.18em] text-foreground"
+              style={{ backgroundColor: "hsl(var(--surface-1) / 0.86)" }}
+            >
+              View archive
+            </Link>
+          </motion.div>
+
+          <div aria-hidden="true" className="pointer-events-none absolute -left-6 top-24 hidden text-[12rem] font-display uppercase tracking-[-0.12em] text-primary/[0.04] xl:block">
+            CODE
+          </div>
+        </div>
+
+        <motion.div
+          variants={fadeUp}
+          initial="hidden"
+          animate="visible"
+          custom={0.65}
+          className="relative noise-overlay"
+        >
+          <div className="panel-shell relative overflow-hidden rounded-[2rem]">
+            <div className="grid gap-px bg-border/50 md:grid-cols-[0.92fr_1.08fr]">
+              <div className="space-y-6 p-5 md:p-6" style={{ backgroundColor: "hsl(var(--surface-2) / 0.88)" }}>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <div className="panel-title">Threat board</div>
+                    <div className="mt-2 text-xl font-display uppercase tracking-[-0.08em] text-foreground">Session 04</div>
+                  </div>
+                  <Radar className="h-5 w-5 text-primary/70" />
+                </div>
+
+                <div className="space-y-3">
+                  <CodeLine n={18} label="critical">{'const query = `SELECT * FROM users WHERE id = ${id}`'}</CodeLine>
+                  <CodeLine n={27} label="high">{'const token = Buffer.from(username + ":" + password)'}</CodeLine>
+                  <CodeLine n={37}>{'const query = "SELECT * FROM users WHERE id = " + req.params.id'}</CodeLine>
+                </div>
+
+                <div className="rounded-[1.4rem] border border-destructive/15 bg-destructive/8 p-4">
+                  <div className="mb-1 text-xs uppercase tracking-[0.18em] text-destructive">Line 18 surfaced first</div>
+                  <p className="text-sm leading-relaxed text-foreground/80">
+                    The system ranks blast radius and exploitability before visual emphasis, so teams act on the right problem first.
+                  </p>
+                </div>
               </div>
-              <div className="mt-3 flex items-center gap-1.5 px-2 py-1.5 rounded-md bg-success/8 border border-success/15">
-                <CheckCircle2 className="h-3 w-3 text-success shrink-0" />
-                <span className="text-2xs text-success font-semibold">Parameterized query · Safe</span>
+
+              <div className="relative overflow-hidden p-5 md:p-6" style={{ backgroundColor: "hsl(var(--surface-1) / 0.92)" }}>
+                <svg viewBox="0 0 320 180" className="absolute right-0 top-0 h-full w-full opacity-70" aria-hidden="true">
+                  <defs>
+                    <linearGradient id="hero-grid" x1="0" y1="0" x2="1" y2="1">
+                      <stop offset="0%" stopColor="hsl(var(--primary) / 0.28)" />
+                      <stop offset="100%" stopColor="transparent" />
+                    </linearGradient>
+                  </defs>
+                  <path d="M24 24H296V156H24Z" fill="none" stroke="url(#hero-grid)" strokeWidth="1" />
+                  <path d="M24 92H296M160 24V156" stroke="hsl(var(--border) / 0.35)" strokeWidth="1" />
+                  <circle cx="254" cy="68" r="34" fill="hsl(var(--primary) / 0.1)" />
+                  <path d="M54 138C118 110 154 74 252 88" fill="none" stroke="hsl(var(--primary) / 0.55)" strokeWidth="2" strokeDasharray="4 8" />
+                </svg>
+
+                <div className="relative">
+                  <div className="mb-5 flex items-center justify-between">
+                    <div>
+                      <div className="panel-title">Patch intent</div>
+                      <div className="mt-2 text-xl font-display uppercase tracking-[-0.08em] text-foreground">Minimal fix</div>
+                    </div>
+                    <CheckCircle2 className="h-5 w-5 text-success" />
+                  </div>
+
+                  <div className="space-y-3 font-mono text-xs">
+                    <PatchLine sign="+" text="const [rows] = await pool.execute(" />
+                    <PatchLine sign="+" text="'SELECT * FROM users WHERE id = ?'," />
+                    <PatchLine sign="+" text="[id]" />
+                    <PatchLine sign="+" text=")" />
+                  </div>
+
+                  <div className="mt-8 rounded-[1.4rem] border border-success/15 bg-success/8 p-4">
+                    <div className="mb-1 text-xs uppercase tracking-[0.18em] text-success">Safer query path</div>
+                    <p className="text-sm leading-relaxed text-foreground/80">
+                      Same route, lower risk surface. The UI treats the diff as a design artifact, not a buried utility panel.
+                    </p>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -162,50 +237,37 @@ function Hero() {
   );
 }
 
-function CodeLine({ n, children, dim, severity, add }: {
-  n: number;
-  children: React.ReactNode;
-  dim?: boolean;
-  severity?: "critical";
-  add?: boolean;
-}) {
+function CodeLine({ n, children, label }: { n: number; children: React.ReactNode; label?: "critical" | "high" }) {
   return (
     <div className={cn(
-      "flex items-center rounded-[2px] -mx-1 px-1",
-      severity === "critical" && "bg-destructive/8",
-      add && "bg-success/8",
+      "flex items-start gap-3 rounded-[1rem] border px-3 py-3 font-mono text-xs",
+      label === "critical" && "border-destructive/15 bg-destructive/8 text-destructive",
+      label === "high" && "border-warning/15 bg-warning/8 text-warning",
+      !label && "border-border/70 bg-background/55 text-foreground/75"
     )}>
-      <span className="w-5 text-right mr-2 select-none text-muted-foreground/30 text-2xs font-mono tabular-nums shrink-0">{n}</span>
-      <span className={cn(
-        "text-xs",
-        dim && "text-muted-foreground/60",
-        severity === "critical" && "text-destructive",
-        add && "text-success",
-        !dim && !severity && !add && "text-foreground/80",
-      )}>
-        {add && <span className="text-success/50 mr-1 select-none">+</span>}
-        {children}
-      </span>
+      <span className="mt-0.5 text-[10px] text-muted-foreground/60">{String(n).padStart(2, "0")}</span>
+      <span className="leading-6">{children}</span>
     </div>
   );
 }
 
+function PatchLine({ sign, text }: { sign: string; text: string }) {
+  return (
+    <div className="flex items-start gap-3 rounded-[1rem] border border-success/12 bg-success/8 px-3 py-3 text-diff-add-text">
+      <span className="mt-0.5 text-success/70">{sign}</span>
+      <span className="leading-6">{text}</span>
+    </div>
+  );
+}
 
 function TrustStrip() {
-  const items = [
-    { icon: Lock, label: "Local-first processing" },
-    { icon: Fingerprint, label: "Zero data collection" },
-    { icon: Zap, label: "Sub-second scans" },
-    { icon: Terminal, label: "Developer-native UX" },
-  ];
-
   return (
-    <section className="border-y border-border/60 py-5">
-      <div className="max-w-5xl mx-auto flex items-center justify-center gap-8 md:gap-12 flex-wrap px-6">
-        {items.map((item) => (
-          <div key={item.label} className="flex items-center gap-2 text-[13px] text-muted-foreground">
-            <item.icon className="h-3.5 w-3.5 text-primary/70" strokeWidth={1.8} />
-            {item.label}
+    <section className="border-y border-border/60 px-4 py-5 md:px-8">
+      <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-center gap-5 md:gap-10">
+        {trustItems.map((item) => (
+          <div key={item.label} className="flex items-center gap-2 text-sm text-muted-foreground">
+            <item.icon className="h-4 w-4 text-primary/70" />
+            <span>{item.label}</span>
           </div>
         ))}
       </div>
@@ -213,45 +275,19 @@ function TrustStrip() {
   );
 }
 
-function Features() {
-  const features = [
-    {
-      icon: ShieldAlert,
-      title: "Security analysis",
-      desc: "SQL injection, XSS, CSRF, insecure crypto, hardcoded secrets — 50+ patterns, zero false-positive tolerance.",
-    },
-    {
-      icon: Bug,
-      title: "Bug detection",
-      desc: "Null dereferences, unhandled errors, race conditions, missing return statements, and logic flaws.",
-    },
-    {
-      icon: Code2,
-      title: "Quality insights",
-      desc: "Anti-patterns, complexity hotspots, dead code, and maintainability warnings with actionable context.",
-    },
-    {
-      icon: GitCompareArrows,
-      title: "Minimal safe patches",
-      desc: "Git-diff style patches that fix only what's broken. Review changes line-by-line before applying.",
-    },
-  ];
-
+function FeatureSpread() {
   return (
-    <section className="py-16 md:py-24 px-6">
-      <div className="max-w-5xl mx-auto">
-        <motion.div
-          variants={fadeUp}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-          className="mb-10"
-        >
-          <h2 className="text-3xl md:text-4xl font-display font-bold text-foreground tracking-[-0.03em] mb-3">
-            Static analysis, reimagined
+    <section className="px-4 py-20 md:px-8 md:py-28">
+      <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[0.78fr_1.22fr]">
+        <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}>
+          <div className="panel-title">LOCK</div>
+          <h2 className="mt-3 text-[clamp(2.7rem,5vw,5rem)] font-display uppercase leading-[0.88] tracking-[-0.1em] text-foreground">
+            The audit tool
+            <br />
+            as editorial architecture.
           </h2>
-          <p className="text-base text-muted-foreground max-w-lg font-[500]">
-            Not another linter. A focused audit workspace that surfaces what matters and shows you exactly how to fix it.
+          <p className="mt-6 max-w-md text-base leading-8 text-muted-foreground">
+            We fused command-room instrumentation with magazine-scale type. The result feels like a security desk, not another pastel dashboard.
           </p>
         </motion.div>
 
@@ -260,19 +296,40 @@ function Features() {
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true }}
-          className="grid md:grid-cols-2 gap-4"
+          className="grid gap-4 md:grid-cols-[1fr_0.88fr]"
         >
-          {features.map((f) => (
-            <motion.div
-              key={f.title}
-              variants={staggerItem}
-              className="rounded-lg border border-border p-6 bg-card hover:border-primary/20 hover:bg-primary/[0.02] transition-all duration-200 group"
-            >
-              <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center mb-4 group-hover:bg-primary/15 transition-colors">
-                <f.icon className="h-5 w-5 text-primary" strokeWidth={1.6} />
+          <motion.div variants={staggerItem} className="panel-shell rounded-[2rem] p-6">
+            <Layers3 className="h-5 w-5 text-primary" />
+            <div className="mt-5 text-2xl font-display uppercase tracking-[-0.08em] text-foreground">
+              Dense by design, calm in hierarchy.
+            </div>
+            <p className="mt-4 text-sm leading-7 text-muted-foreground">
+              Type scale does the heavy lifting. Dangerous states are bright, but the background stays disciplined so long sessions do not fatigue the eye.
+            </p>
+          </motion.div>
+
+          <motion.div variants={staggerItem} className="panel-shell rounded-[2rem] p-6">
+            <Waypoints className="h-5 w-5 text-primary" />
+            <div className="mt-5 text-2xl font-display uppercase tracking-[-0.08em] text-foreground">
+              One route language.
+            </div>
+            <p className="mt-4 text-sm leading-7 text-muted-foreground">
+              Marketing, workspace, history, rules, and settings all share the same cinematic token set, just re-composed for their job.
+            </p>
+          </motion.div>
+
+          {featureRows.map((item) => (
+            <motion.div key={item.title} variants={staggerItem} className="panel-shell rounded-[2rem] p-6 md:col-span-2">
+              <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
+                <div className="max-w-2xl">
+                  <div className="panel-title">Feature</div>
+                  <h3 className="mt-3 text-2xl font-display uppercase tracking-[-0.08em] text-foreground">{item.title}</h3>
+                  <p className="mt-4 text-sm leading-7 text-muted-foreground">{item.desc}</p>
+                </div>
+                <div className="flex h-14 w-14 items-center justify-center rounded-[1.35rem] border border-primary/15 bg-primary/10 text-primary">
+                  <item.icon className="h-6 w-6" />
+                </div>
               </div>
-              <h3 className="text-base font-display font-semibold text-foreground mb-2">{f.title}</h3>
-              <p className="text-[13px] text-muted-foreground leading-relaxed">{f.desc}</p>
             </motion.div>
           ))}
         </motion.div>
@@ -281,40 +338,47 @@ function Features() {
   );
 }
 
-function Workflow() {
+function ProcessBand() {
   const steps = [
-    { num: "01", title: "Paste code", desc: "Drop any snippet into the Monaco editor. Auto-detects language." },
-    { num: "02", title: "Review findings", desc: "Browse categorized issues. Click to highlight affected lines." },
-    { num: "03", title: "Apply the fix", desc: "Inspect the diff, copy the patch, and ship with confidence." },
+    { num: "01", title: "Drop code into the deck", desc: "The editor is the stage, not a side panel. Paste production snippets, choose a language, and stay in context." },
+    { num: "02", title: "Read the pressure points", desc: "Findings rank by risk and confidence, with visual weight calibrated for triage rather than decoration." },
+    { num: "03", title: "Review the patch story", desc: "Diffs and recommendations arrive together so your team sees both the change and the reasoning." },
   ];
 
   return (
-    <section className="py-16 md:py-24 px-6 border-y border-border/40" style={{ backgroundColor: "hsl(var(--surface-1))" }}>
-      <div className="max-w-4xl mx-auto">
-        <motion.h2
-          variants={fadeUp}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-          className="text-3xl md:text-4xl font-display font-bold text-foreground tracking-[-0.03em] text-center mb-12"
-        >
-          Three steps to safer code
-        </motion.h2>
+    <section className="relative overflow-hidden border-y border-border/60 px-4 py-20 md:px-8 md:py-28" style={{ backgroundColor: "hsl(var(--surface-1) / 0.76)" }}>
+      <div aria-hidden="true" className="pointer-events-none absolute inset-y-0 left-1/2 hidden w-px bg-border/45 lg:block" />
+      <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[0.76fr_1.24fr]">
+        <div>
+          <div className="panel-title">Workflow</div>
+          <h2 className="mt-4 text-[clamp(2.8rem,4vw,4.9rem)] font-display uppercase leading-[0.88] tracking-[-0.1em] text-foreground">
+            Audit,
+            <br />
+            don't meander.
+          </h2>
+          <p className="mt-5 max-w-md text-base leading-8 text-muted-foreground">
+            The expected approach would be another center-stacked three-step feature block. Instead, the process reads like a spread from an incident review manual.
+          </p>
+        </div>
 
-        <div className="grid md:grid-cols-3 gap-8 md:gap-10">
-          {steps.map((s, i) => (
+        <div className="space-y-5">
+          {steps.map((step, index) => (
             <motion.div
-              key={s.num}
+              key={step.num}
               variants={fadeUp}
               initial="hidden"
               whileInView="visible"
               viewport={{ once: true }}
-              custom={i}
-              className="text-center md:text-left"
+              custom={index}
+              className="panel-shell magnetic-hover rounded-[2rem] p-6"
             >
-              <div className="text-5xl md:text-6xl font-display font-bold text-primary/12 leading-none mb-3">{s.num}</div>
-              <h3 className="text-lg font-display font-semibold text-foreground mb-2">{s.title}</h3>
-              <p className="text-[13px] text-muted-foreground leading-relaxed">{s.desc}</p>
+              <div className="grid gap-5 md:grid-cols-[140px_1fr] md:items-start">
+                <div className="text-[4rem] font-display leading-none tracking-[-0.12em] text-primary/22">{step.num}</div>
+                <div>
+                  <h3 className="text-2xl font-display uppercase tracking-[-0.08em] text-foreground">{step.title}</h3>
+                  <p className="mt-4 max-w-2xl text-sm leading-7 text-muted-foreground">{step.desc}</p>
+                </div>
+              </div>
             </motion.div>
           ))}
         </div>
@@ -323,33 +387,39 @@ function Workflow() {
   );
 }
 
-function Languages() {
+function LanguageWall() {
   return (
-    <section className="py-16 md:py-24 px-6">
-      <div className="max-w-4xl mx-auto text-center">
-        <motion.h2
-          variants={fadeUp}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-          className="text-3xl md:text-4xl font-display font-bold text-foreground tracking-[-0.03em] mb-10"
-        >
-          Multi-language support
-        </motion.h2>
+    <section className="px-4 py-20 md:px-8 md:py-28">
+      <div className="mx-auto max-w-7xl">
+        <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+          <div>
+            <div className="panel-title">Coverage</div>
+            <h2 className="mt-3 text-[clamp(2.4rem,4vw,4rem)] font-display uppercase leading-[0.9] tracking-[-0.1em] text-foreground">
+              Multi-language,
+              <br />
+              single atmosphere.
+            </h2>
+          </div>
+          <p className="max-w-md text-sm leading-7 text-muted-foreground">
+            The visual system flexes from JavaScript to Rust without changing product character.
+          </p>
+        </div>
+
         <motion.div
           variants={staggerContainer}
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true }}
-          className="flex flex-wrap justify-center gap-2.5"
+          className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5"
         >
-          {SUPPORTED_LANGUAGES.map((l) => (
+          {SUPPORTED_LANGUAGES.map((language) => (
             <motion.div
-              key={l.id}
+              key={language.id}
               variants={staggerItem}
-              className="px-3.5 py-2 rounded-lg border border-border text-sm text-foreground/80 font-mono bg-card hover:border-primary/30 hover:bg-primary/[0.03] transition-all duration-150"
+              className="magnetic-hover panel-shell rounded-[1.6rem] px-4 py-5"
             >
-              {l.label}
+              <div className="text-[10px] uppercase tracking-[0.26em] text-muted-foreground">language</div>
+              <div className="mt-3 font-mono text-sm text-foreground">{language.label}</div>
             </motion.div>
           ))}
         </motion.div>
@@ -358,25 +428,32 @@ function Languages() {
   );
 }
 
-function Privacy() {
+function PrivacyBand() {
   return (
-    <section className="py-16 md:py-24 px-6 border-y border-border/40" style={{ backgroundColor: "hsl(var(--surface-1))" }}>
-      <div className="max-w-2xl mx-auto text-center">
-        <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mx-auto mb-5">
-          <Lock className="h-6 w-6 text-primary" strokeWidth={1.6} />
+    <section className="border-y border-border/60 px-4 py-20 md:px-8 md:py-28" style={{ backgroundColor: "hsl(var(--surface-1) / 0.82)" }}>
+      <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[0.9fr_1.1fr]">
+        <div className="panel-shell rounded-[2rem] p-6">
+          <Lock className="h-6 w-6 text-primary" />
+          <h2 className="mt-5 text-[clamp(2rem,3vw,3.4rem)] font-display uppercase leading-[0.9] tracking-[-0.09em] text-foreground">
+            Your code does
+            <br />
+            not leave the room.
+          </h2>
         </div>
-        <h2 className="text-3xl md:text-4xl font-display font-bold text-foreground tracking-[-0.03em] mb-3">Your code stays yours</h2>
-        <p className="text-base text-muted-foreground leading-relaxed mb-8 font-[500]">
-          CodeAudit runs entirely on your machine. No code is sent to external servers.
-          No telemetry, no cloud storage, no third-party access. Ever.
-        </p>
-        <div className="flex flex-col md:flex-row items-center justify-center gap-6 text-sm">
-          {["Zero data collection", "Offline capable", "Open rules"].map((t) => (
-            <span key={t} className="flex items-center gap-2 text-muted-foreground">
-              <CheckCircle2 className="h-4 w-4 text-primary shrink-0" strokeWidth={2} />
-              <span className="font-[500]">{t}</span>
-            </span>
-          ))}
+
+        <div className="panel-shell rounded-[2rem] p-6 md:p-8">
+          <p className="max-w-2xl text-base leading-8 text-muted-foreground">
+            Calm Scan runs like an internal atelier: private, intentional, and free from telemetry theater. The product makes privacy visible,
+            not just promised in tiny footer text.
+          </p>
+          <div className="mt-8 grid gap-3 md:grid-cols-3">
+            {["No cloud copy", "Offline-friendly", "Inspectable rules"].map((item) => (
+              <div key={item} className="rounded-[1.3rem] border border-border/70 bg-background/50 px-4 py-4">
+                <CheckCircle2 className="h-4 w-4 text-success" />
+                <div className="mt-3 text-sm font-medium text-foreground">{item}</div>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </section>
@@ -385,24 +462,35 @@ function Privacy() {
 
 function CTAFooter() {
   return (
-    <section className="py-16 md:py-24 px-6">
-      <div className="max-w-2xl mx-auto text-center">
-        <h2 className="text-3xl md:text-4xl font-display font-bold text-foreground tracking-[-0.03em] mb-3">Ready to audit your code?</h2>
-        <p className="text-base text-muted-foreground mb-8 font-[500]">No signup required. No API keys. Just paste and scan.</p>
-        <Link
-          to="/app"
-          className="inline-flex items-center gap-2 px-7 py-3 rounded-lg bg-primary text-primary-foreground font-semibold text-base hover:brightness-110 active:scale-[0.98] transition-all duration-150 shadow-lg shadow-primary/25"
-        >
-          Open scanner <ArrowRight className="h-4 w-4" />
-        </Link>
-      </div>
+    <section className="px-4 py-20 md:px-8 md:py-28">
+      <div className="mx-auto max-w-7xl rounded-[2.4rem] border border-primary/15 bg-[linear-gradient(135deg,hsl(var(--primary)/0.18),transparent_58%),linear-gradient(180deg,hsl(var(--surface-2)/0.82),hsl(var(--surface-1)/0.92))] p-8 shadow-[var(--shadow-hard)] md:p-12">
+        <div className="grid gap-8 lg:grid-cols-[1.1fr_0.9fr] lg:items-end">
+          <div>
+            <div className="panel-title">Launch</div>
+            <h2 className="mt-4 text-[clamp(2.6rem,4.8vw,5rem)] font-display uppercase leading-[0.86] tracking-[-0.1em] text-foreground">
+              Make review
+              <br />
+              feel expensive.
+            </h2>
+            <p className="mt-5 max-w-xl text-base leading-8 text-muted-foreground">
+              No signup. No account choreography. Paste code, trace risk, and leave with a patch your team can actually trust.
+            </p>
+          </div>
 
-      <div className="max-w-4xl mx-auto mt-14 pt-6 border-t border-border/50 flex items-center justify-between text-xs text-muted-foreground/60">
-        <div className="flex items-center gap-1.5">
-          <Shield className="h-4 w-4 text-primary/60" />
-          <span className="font-semibold">CodeAudit</span>
+          <div className="flex flex-col items-start gap-4 lg:items-end">
+            <Link
+              to="/app"
+              className="magnetic-hover inline-flex items-center gap-2 rounded-full border border-primary/35 bg-primary px-6 py-3 text-sm font-semibold uppercase tracking-[0.18em] text-primary-foreground"
+            >
+              Open command deck
+              <ArrowRight className="h-4 w-4" />
+            </Link>
+            <div className="flex items-center gap-2 text-xs uppercase tracking-[0.2em] text-muted-foreground">
+              <Shield className="h-4 w-4 text-primary/70" />
+              Calm Scan for developers who like evidence.
+            </div>
+          </div>
         </div>
-        <span className="hidden md:block">Built for developers who ship secure code.</span>
       </div>
     </section>
   );

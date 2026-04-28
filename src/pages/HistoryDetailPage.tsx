@@ -74,23 +74,35 @@ export default function HistoryDetailPage() {
 
   return (
     <AppShell>
-      <motion.div {...pageTransition} className="h-full overflow-y-auto p-6">
-        <div className="max-w-4xl mx-auto">
-          {/* Breadcrumb */}
-          <Link to="/history" className="inline-flex items-center gap-1 text-2xs text-muted-foreground hover:text-foreground transition-colors mb-4">
+      <motion.div {...pageTransition} className="h-full overflow-y-auto p-4 md:p-6">
+        <div className="mx-auto max-w-6xl">
+          <Link to="/history" className="mb-4 inline-flex items-center gap-1 text-2xs uppercase tracking-[0.18em] text-muted-foreground transition-colors hover:text-foreground">
             <ArrowLeft className="h-3 w-3" /> Back to history
           </Link>
 
-          <h1 className="text-2xl font-bold text-foreground tracking-tight mb-1">Scan #{id}</h1>
-          <p className="text-sm text-muted-foreground mb-6 capitalize">
-            {result.language} · {result.stats.linesScanned} lines · {result.stats.scanDuration}s
-          </p>
+          <div className="mb-6 grid gap-4 lg:grid-cols-[1.1fr_0.9fr]">
+            <div className="panel-shell rounded-[2rem] p-6">
+              <div className="panel-title">Case file</div>
+              <h1 className="mt-3 text-[clamp(2.2rem,4vw,4rem)] font-display uppercase leading-[0.88] tracking-[-0.1em] text-foreground">
+                Scan #{id}
+              </h1>
+              <p className="mt-4 text-sm text-muted-foreground capitalize">
+                {result.language} · {result.stats.linesScanned} lines · {result.stats.scanDuration}s
+              </p>
+            </div>
+
+            <div className="panel-shell rounded-[2rem] p-6">
+              <div className="panel-title">Current reading</div>
+              <p className="mt-4 text-sm leading-7 text-muted-foreground">
+                This route turns a past scan into a forensic spread: stats first, then findings, then the before-and-after code path.
+              </p>
+            </div>
+          </div>
 
           <MetricRow stats={result.stats} />
 
-          {/* Findings */}
-          <div className="mt-8 space-y-2">
-            <h2 className="text-lg font-semibold text-foreground mb-3">Findings</h2>
+          <div className="mt-8 space-y-3">
+            <h2 className="panel-title">Findings</h2>
             {result.findings.map((f, i) => (
               <motion.div
                 key={f.id}
@@ -98,7 +110,7 @@ export default function HistoryDetailPage() {
                 initial="hidden"
                 animate="visible"
                 custom={i}
-                className="p-3.5 rounded-lg border border-border bg-card hover:border-border/80 transition-colors"
+                className="panel-shell rounded-[1.5rem] p-4"
               >
                 <div className="flex items-center gap-2 mb-1.5">
                   <SeverityBadge severity={f.severity} />
@@ -110,18 +122,17 @@ export default function HistoryDetailPage() {
             ))}
           </div>
 
-          {/* Diff */}
           <div className="mt-8">
             <div className="flex items-center justify-between mb-3">
-              <h2 className="text-lg font-semibold text-foreground">Diff</h2>
+              <h2 className="panel-title">Diff</h2>
               <button
                 onClick={() => navigator.clipboard.writeText(result.improvedCode)}
-                className="flex items-center gap-1 text-2xs text-muted-foreground hover:text-foreground transition-colors"
+                className="magnetic-hover flex items-center gap-1 rounded-full border border-border/80 px-3 py-1.5 text-2xs uppercase tracking-[0.18em] text-muted-foreground hover:text-foreground transition-colors"
               >
                 <Copy className="h-3 w-3" /> Copy patch
               </button>
             </div>
-            <div className="rounded-lg border border-border overflow-hidden font-mono text-xs leading-5">
+            <div className="panel-shell overflow-hidden rounded-[1.6rem] font-mono text-xs leading-5">
               {result.originalCode.split("\n").slice(0, 12).map((line, i) => (
                 <div key={i} className="flex" style={{ backgroundColor: "hsl(var(--diff-del-bg))" }}>
                   <span className="w-8 text-right pr-2 select-none shrink-0 border-r text-2xs tabular-nums" style={{ color: "hsl(var(--muted-foreground) / 0.3)", backgroundColor: "hsl(var(--diff-del-gutter))", borderColor: "hsl(var(--border))" }}>{i+1}</span>
@@ -173,11 +184,11 @@ function MetricRow({ stats }: { stats: ScanResult["stats"] }) {
   ];
 
   return (
-    <div className="grid grid-cols-4 gap-2">
+    <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
       {metrics.map((m) => (
-        <div key={m.label} className={`rounded-lg p-3 text-center ${m.bg}`}>
+        <div key={m.label} className={`rounded-[1.4rem] border border-border/60 p-4 text-center ${m.bg}`}>
           <span ref={m.ref} className={`text-2xl font-bold font-mono leading-none ${m.color}`}>0</span>
-          <div className="text-2xs text-muted-foreground mt-1">{m.label}</div>
+          <div className="mt-1 text-2xs uppercase tracking-[0.18em] text-muted-foreground">{m.label}</div>
         </div>
       ))}
     </div>

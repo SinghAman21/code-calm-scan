@@ -28,11 +28,10 @@ export function FindingCard({ finding, isSelected, onClick, index }: FindingCard
       onClick={onClick}
       animate={isSelected ? "selected" : "idle"}
       className={cn(
-        "w-full text-left px-3 py-2.5 rounded-md border-l-2 transition-colors duration-150",
-        "hover:bg-accent/60 group",
+        "group w-full rounded-[1.4rem] border text-left transition-colors duration-150",
         isSelected
-          ? "border-primary bg-primary/[0.06]"
-          : "border-transparent hover:border-border/50 hover:bg-accent/40"
+          ? "border-primary/30 bg-primary/[0.08]"
+          : "border-border/60 bg-background/35 hover:border-border hover:bg-accent/30"
       )}
     >
       <motion.div
@@ -46,25 +45,28 @@ export function FindingCard({ finding, isSelected, onClick, index }: FindingCard
           initial="idle"
           animate={isSelected ? "selected" : "idle"}
         >
-          <div className="flex items-start gap-2">
+          <div className="flex items-start gap-3 p-3.5">
             <div className={cn(
-              "mt-0.5 p-1 rounded shrink-0 transition-colors duration-150",
-              isSelected ? "bg-primary/10" : "bg-muted"
+              "mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-[1rem] border transition-colors duration-150",
+              isSelected ? "border-primary/25 bg-primary/12" : "border-border/70 bg-muted/45"
             )}>
-              <Icon className={cn("h-3 w-3", isSelected ? "text-primary" : "text-muted-foreground")} strokeWidth={2} />
+              <Icon className={cn("h-4 w-4", isSelected ? "text-primary" : "text-muted-foreground")} strokeWidth={2} />
             </div>
             <div className="flex-1 min-w-0">
               <p className={cn(
-                "text-[13px] leading-snug mb-1 truncate",
+                "mb-1 line-clamp-2 text-[13px] leading-snug",
                 isSelected ? "text-foreground font-medium" : "text-foreground/90"
               )}>
                 {finding.title}
               </p>
-              <div className="flex items-center gap-1.5">
+              <div className="mb-2 flex items-center gap-1.5">
                 <SeverityBadge severity={finding.severity} />
                 <span className="text-2xs text-muted-foreground font-mono">L{finding.line}</span>
                 <span className="text-2xs text-muted-foreground/60">·</span>
                 <span className="text-2xs text-muted-foreground font-mono">{finding.confidence}%</span>
+              </div>
+              <div className="text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+                {categoryConfig[finding.category].label} signal
               </div>
             </div>
           </div>

@@ -55,10 +55,30 @@ export default function HistoryPage() {
 
   return (
     <AppShell>
-      <motion.div {...pageTransition} className="h-full overflow-y-auto p-6">
-        <div className="max-w-4xl mx-auto">
-          <h1 className="text-2xl font-bold text-foreground tracking-tight mb-1">Scan History</h1>
-          <p className="text-sm text-muted-foreground mb-6">Previous audit results and their findings.</p>
+      <motion.div {...pageTransition} className="h-full overflow-y-auto p-4 md:p-6">
+        <div className="mx-auto max-w-6xl">
+          <div className="mb-6 grid gap-4 lg:grid-cols-[1.15fr_0.85fr]">
+            <div className="panel-shell rounded-[2rem] p-6">
+              <div className="panel-title">Archive view</div>
+              <h1 className="mt-3 text-[clamp(2.2rem,4vw,4rem)] font-display uppercase leading-[0.88] tracking-[-0.1em] text-foreground">
+                Every scan,
+                <br />
+                staged like evidence.
+              </h1>
+              <p className="mt-4 max-w-2xl text-sm leading-7 text-muted-foreground">
+                History is not a dump list. It is a ledger of pressure: languages, issue counts, and the pace of remediation over time.
+              </p>
+            </div>
+
+            <div className="panel-shell rounded-[2rem] p-6">
+              <div className="panel-title">Quick counts</div>
+              <div className="mt-4 grid grid-cols-3 gap-3">
+                <MetricCard label="Entries" value={String(entries.length)} />
+                <MetricCard label="Filtered" value={String(filtered.length)} />
+                <MetricCard label="Search" value={search ? "on" : "off"} />
+              </div>
+            </div>
+          </div>
 
           <div className="relative mb-5">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
@@ -67,7 +87,8 @@ export default function HistoryPage() {
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Filter by language or snippet…"
-              className="w-full pl-9 pr-4 py-2.5 rounded-lg border border-border bg-card text-sm text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:ring-1 focus:ring-ring transition-shadow"
+              className="w-full rounded-[1.3rem] border border-border/80 py-3 pl-10 pr-4 text-sm text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:ring-1 focus:ring-ring transition-shadow"
+              style={{ backgroundColor: "hsl(var(--card) / 0.85)" }}
             />
           </div>
 
@@ -87,24 +108,24 @@ export default function HistoryPage() {
           )}
 
           {!isLoading && (
-            <motion.div variants={staggerContainer} initial="hidden" animate="visible" className="space-y-1">
+            <motion.div variants={staggerContainer} initial="hidden" animate="visible" className="space-y-3">
             {filtered.map((entry) => (
               <motion.div key={entry.id} variants={staggerItem}>
                 <Link
                   to={`/history/${entry.id}`}
-                  className="flex items-center gap-4 px-4 py-3 rounded-lg border border-transparent hover:border-border hover:bg-accent/40 transition-all duration-150 group"
+                  className="group panel-shell magnetic-hover flex items-center gap-4 rounded-[1.6rem] px-4 py-4"
                 >
                   <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 mb-0.5">
-                      <span className="text-sm font-semibold text-foreground capitalize">{entry.language}</span>
+                    <div className="mb-1 flex items-center gap-2">
+                      <span className="text-sm font-semibold uppercase tracking-[0.1em] text-foreground capitalize">{entry.language}</span>
                       <span className={cn(
-                        "text-xs px-2 py-0.5 rounded font-medium",
+                        "rounded-full px-2.5 py-1 text-[10px] font-medium uppercase tracking-[0.18em]",
                         entry.status === "completed" ? "bg-success/10 text-success" : "bg-destructive/10 text-destructive"
                       )}>
                         {entry.status}
                       </span>
                     </div>
-                    <p className="text-xs text-muted-foreground truncate">{entry.snippet}</p>
+                    <p className="text-sm text-muted-foreground truncate">{entry.snippet}</p>
                   </div>
                   <div className="flex items-center gap-3 shrink-0">
                     <div className="flex gap-1">
@@ -112,7 +133,7 @@ export default function HistoryPage() {
                       {entry.stats.high > 0 && <SeverityBadge severity="high" />}
                       {entry.stats.medium > 0 && <SeverityBadge severity="medium" />}
                     </div>
-                    <div className="flex items-center gap-1 text-xs text-muted-foreground tabular-nums">
+                    <div className="flex items-center gap-1 rounded-full border border-border/80 px-3 py-1 text-xs text-muted-foreground tabular-nums">
                       <Clock className="h-3 w-3" />
                       {new Date(entry.timestamp).toLocaleDateString()}
                     </div>
@@ -133,5 +154,14 @@ export default function HistoryPage() {
         </div>
       </motion.div>
     </AppShell>
+  );
+}
+
+function MetricCard({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="rounded-[1.3rem] border border-border/70 bg-background/45 p-4">
+      <div className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">{label}</div>
+      <div className="mt-3 font-display text-2xl uppercase tracking-[-0.08em] text-foreground">{value}</div>
+    </div>
   );
 }
